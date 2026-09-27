@@ -162,6 +162,21 @@
   body.modern.playmode #fieldsWin { border: 0; }
   body.modern .mresume { background: #041824; color: #fff; border-color: #00e5ff; box-shadow: 0 0 16px rgba(0,229,255,.6); }
   .mresume { background: var(--face); }
+  /* phones: "turn sideways" prompt while playing in portrait */
+  .rotprompt { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,40,.92); color: #fff; font: 16px/1.4 Tahoma, Arial, sans-serif; text-align: center; touch-action: none; }
+  .rotprompt[hidden] { display: none !important; }
+  .rotbox { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 320px; }
+  .rotphone { width: 46px; height: 78px; border: 4px solid currentColor; border-radius: 9px; position: relative; margin-bottom: 8px; animation: rotphone 2.2s ease-in-out infinite; }
+  .rotphone span { position: absolute; left: 50%; bottom: 4px; width: 10px; height: 4px; margin-left: -5px; border-radius: 2px; background: currentColor; }
+  @keyframes rotphone { 0%, 20% { transform: rotate(0); } 55%, 85% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
+  @media (prefers-reduced-motion: reduce) { .rotphone { animation: none; transform: rotate(-90deg); } }
+  .rottitle { font-weight: bold; font-size: 20px; }
+  .rotnote { font-size: 14px; opacity: .85; }
+  .rotbox button { min-height: 46px; min-width: 220px; font-size: 16px; font-weight: bold; }
+  body.modern .rotprompt { background: rgba(2,4,10,.95); color: #00e5ff; font-family: Rajdhani, Arial, sans-serif; }
+  body.modern .rottitle { font-family: Orbitron, Rajdhani, sans-serif; letter-spacing: .06em; text-transform: uppercase; text-shadow: 0 0 10px rgba(0,229,255,.7); }
+  body.modern .rotnote { color: #bdf6ff; }
+  body.modern .rotbox button { background: #041824; color: #fff; border: 1px solid #00e5ff; box-shadow: 0 0 12px rgba(0,229,255,.45); }
   body.modern .mbar .mstatus { color: #00e5ff; font-family: Orbitron, Rajdhani, sans-serif; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
   body.modern .mctl-l button, body.modern .mctl-r button { font-size: 24px; }
   body.modern .mctl-r .mdrop { color: #ff6ef5; border-color: #ff3df2; box-shadow: 0 0 8px rgba(255,61,242,.35); font-size: 14px; }
@@ -340,6 +355,15 @@
 
 <div id="helpPop" class="helppop" role="tooltip" hidden></div>
 <button type="button" id="mResume" class="mresume" hidden>▶ Back to Game</button>
+<div id="rotPrompt" class="rotprompt" role="dialog" aria-modal="true" aria-labelledby="rotTitle" hidden>
+  <div class="rotbox">
+    <div class="rotphone" aria-hidden="true"><span></span></div>
+    <div class="rottitle" id="rotTitle">Turn your phone sideways</div>
+    <div class="rotnote" id="rotNote">TetriNET plays in landscape on phones.</div>
+    <button type="button" id="rotFull">⛶ Play Full Screen</button>
+    <button type="button" id="rotMenu">Menu</button>
+  </div>
+</div>
 <div id="app">
   <div class="modebar"><span id="modeLabel">Display</span>
     <span class="seg" role="group" aria-labelledby="modeLabel">
@@ -472,6 +496,7 @@
       <span class="mstatus" id="mStatus">Not Playing</span>
       <button type="button" id="mNew">New Game</button>
       <button type="button" id="mPause">Pause</button>
+      <button type="button" id="mFull" aria-label="Full screen" title="Full screen">⛶</button>
       <button type="button" id="mExit">Menu</button>
     </div>
     <div class="mctl-sp" id="mctlSp" aria-label="Special blocks">
@@ -496,8 +521,8 @@
     <div class="legend-keys" id="legendKeys"></div>
   </section>
 
-  <section class="win" aria-label="TetriNET Settings">
-    <div class="titlebar"><span class="grow">TetriNET — Settings</span><button type="button" class="collapse" data-collapse aria-expanded="true" aria-controls="settingsBody" title="Hide">Hide ▴</button></div>
+  <section class="win collapsed" aria-label="TetriNET Settings">
+    <div class="titlebar"><span class="grow">TetriNET — Settings</span><button type="button" class="collapse" data-collapse aria-expanded="false" aria-controls="settingsBody" title="Show">Show ▾</button></div>
     <div id="settingsBody">
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-server" aria-selected="true" aria-controls="p-server" type="button">Server Settings</button>
@@ -2030,7 +2055,50 @@ function render() {
     cx.fillStyle = P.upper ? '#00e5ff' : '#c8d0ff'; cx.font = 'bold 13px Arial, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'top';
     cx.fillText('Press Start New Game', 97, 180);
     cx.font = '11px Arial, sans-serif'; cx.fillStyle = P.upper ? '#7fdfff' : '#8fa0e0';
-    cx.fillText(MOBILE.on ? 'then use the buttons below' : 'then click here and play', 97, 198);
+    cx.fillText(MOBILE.on ? 'then swipe here or use the buttons' : 'then click here and play', 97, 198);
+  }
+
+  // special block being dragged onto a field (touch)
+  if (DRAG && G.running) {
+    const kind = SP_KIND[DRAG.sp];
+    const rectOf = num => {
+      if (num === G.me) return [1, 20, 192, 352];
+      const k = nums.indexOf(num);
+      if (k < 0) return null;
+      const c = L.opp[k];
+      return [c.x, c.y + 1, L.cw, L.capH + L.ch];
+    };
+    const colorFor = num => {
+      const good = num === G.me ? kind !== 'attack' : kind !== 'defense';
+      return good ? (num === G.me ? '#39ff88' : '#ff4d6d') : '#ffd23d';
+    };
+    // faint outline on every player it can be used on, a glow on the one under the finger
+    cx.save();
+    for (const num of [G.me].concat(nums)) {
+      if (!num || !spTargetOk(num)) continue;
+      const r = rectOf(num);
+      if (!r) continue;
+      const hot = num === DRAG.target, col = colorFor(num);
+      if (hot) { cx.fillStyle = col; cx.globalAlpha = 0.22; cx.fillRect(r[0], r[1], r[2], r[3]); cx.globalAlpha = 1; cx.shadowColor = col; cx.shadowBlur = 12; }
+      cx.strokeStyle = col; cx.lineWidth = hot ? 3 : 1; cx.setLineDash(hot ? [] : [4, 3]);
+      cx.strokeRect(r[0] + 1, r[1] + 1, r[2] - 2, r[3] - 2);
+      cx.shadowBlur = 0;
+    }
+    cx.setLineDash([]);
+    // the block itself, drawn above the finger so it stays visible
+    const img = T.big[BLOCKCHARS.indexOf(DRAG.sp)];
+    const bx2 = Math.round(DRAG.x - 12), by2 = Math.round(DRAG.y - 40);
+    cx.shadowColor = 'rgba(0,0,0,.6)'; cx.shadowBlur = 6;
+    if (img) cx.drawImage(img, bx2, by2, 24, 24);
+    cx.shadowBlur = 0;
+    if (DRAG.target) {
+      const t = DRAG.target === G.me ? 'On me' : 'To ' + (G.players[DRAG.target] ? G.players[DRAG.target].name : '');
+      cx.font = 'bold 11px Arial, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'bottom';
+      const tw = cx.measureText(t).width + 8;
+      cx.fillStyle = 'rgba(0,0,0,.75)'; cx.fillRect(DRAG.x - tw / 2, by2 - 16, tw, 14);
+      cx.fillStyle = '#fff'; cx.fillText(t, DRAG.x, by2 - 3);
+    }
+    cx.restore();
   }
 }
 
@@ -2167,6 +2235,7 @@ function updateMobileMode() {
     else if (G.running) enterPlay();
   }
   updateResume();
+  updateRotPrompt();
 }
 function enterPlay() {
   if (!MOBILE.on) return;
@@ -2175,6 +2244,9 @@ function enterPlay() {
   closeHelp && closeHelp();
   gid('mSheet').hidden = true;
   updateResume();
+  updateRotPrompt();
+  // phones: full screen + landscape lock where the browser allows it (needs a recent tap, e.g. Start New Game)
+  if (isPhone()) goFullscreen();
   requestAnimationFrame(() => { fitStage(); requestAnimationFrame(fitStage); });
 }
 function exitPlay(silent) {
@@ -2182,12 +2254,70 @@ function exitPlay(silent) {
   document.body.classList.remove('playmode');
   for (const p of G.players) if (p) softDropUp(p);
   releaseAllTouches();
+  cancelGestures();
+  leaveFullscreen();
   updateResume();
+  updateRotPrompt();
   requestAnimationFrame(fitStage);
 }
 function updateResume() { gid('mResume').hidden = !(MOBILE.on && !MOBILE.play && G.running); }
 gid('mResume').addEventListener('click', enterPlay);
 gid('mExit').addEventListener('click', () => exitPlay());
+
+// ---------- phones play in landscape ----------
+// A phone (shortest screen side under 600 CSS px) held upright during a game gets a
+// "turn sideways" prompt; menus work in either orientation, tablets and computers are unaffected.
+function isPhone() {
+  const sw = (window.screen && screen.width) || window.innerWidth, sh = (window.screen && screen.height) || window.innerHeight;
+  return MOBILE.on && Math.min(sw, sh, Math.max(window.innerWidth, window.innerHeight)) < 600;
+}
+const fsEl = document.documentElement;
+const canFullscreen = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
+const fsActive = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+function goFullscreen() {                        // must run inside a tap
+  if (!canFullscreen || fsActive()) { lockLandscape(); return; }
+  try {
+    const r = fsEl.requestFullscreen ? fsEl.requestFullscreen({ navigationUI: 'hide' }) : fsEl.webkitRequestFullscreen();
+    if (r && r.then) r.then(lockLandscape, () => {});
+  } catch (e) {}
+}
+function lockLandscape() {
+  try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch (e) {}
+}
+function leaveFullscreen() {
+  try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+  try { if (fsActive()) { const r = (document.exitFullscreen || document.webkitExitFullscreen).call(document); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
+}
+let rotPaused = false;                         // offline games pause while the prompt is up
+function updateRotPrompt() {
+  const show = MOBILE.play && G.running && isPhone() && !MOBILE.land;
+  const el = gid('rotPrompt');
+  if (show) {
+    if (el.hidden) {
+      el.hidden = false;
+      for (const p of G.players) if (p) softDropUp(p);
+      releaseAllTouches(); cancelGestures();
+    }
+    gid('rotFull').hidden = !canFullscreen || fsActive();
+    if (G.running && !NET.online && !G.paused) { setPaused(true); rotPaused = true; }
+    const note = NET.online && G.running ? 'TetriNET plays in landscape on phones. The game keeps going for the other players.'
+      : rotPaused ? 'TetriNET plays in landscape on phones. Your game is paused until you turn it.' : 'TetriNET plays in landscape on phones.';
+    if (gid('rotNote').textContent !== note) gid('rotNote').textContent = note;
+  } else {
+    el.hidden = true;
+    if (!G.running) rotPaused = false;
+    // stays paused while the player is in the menu; resumes when they're back in the game, sideways
+    else if (rotPaused && MOBILE.play) {
+      rotPaused = false;
+      if (G.running && !NET.online && G.paused) setPaused(false);
+    }
+  }
+}
+gid('rotFull').addEventListener('click', goFullscreen);
+gid('rotMenu').addEventListener('click', () => exitPlay());
+gid('rotPrompt').addEventListener('touchmove', e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+gid('mFull').addEventListener('click', () => { if (fsActive()) leaveFullscreen(); else goFullscreen(); });
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(ev, () => { setTimeout(() => { updateMobileMode(); fitStage(); }, 60); });
 gid('mNew').addEventListener('click', () => startGame());
 gid('mPause').addEventListener('click', () => togglePause());
 
@@ -2268,23 +2398,114 @@ gid('mTargets').addEventListener('pointerdown', e => {
   e.preventDefault();
   useSpecial(ME(), parseInt(b.dataset.t, 10));
 });
-// tap an opponent's field on the canvas to send them your special block
+/* Touch gestures on the fields (play mode):
+   - your field: drag sideways to move (one column per ~0.9 block of finger travel), tap to rotate
+     (right half clockwise, left half counter-clockwise), drag down and hold to drop faster,
+     flick down to drop.
+   - your special blocks (under your field): drag the first one onto a player's field to use it
+     on them (onto your own field = on yourself); tap to see what it does.
+   - tap another player's field to send them your special block.                                  */
+const GEST = new Map();                // pointerId -> gesture
+let DRAG = null;                       // special block being dragged: { sp, x, y, target } in layout units
+function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+function stagePt(e) {
+  const r = stage.getBoundingClientRect(), L = CUR;
+  return { x: (e.clientX - r.left) / r.width * L.LW, y: (e.clientY - r.top) / r.height * L.LH, k: r.width / L.LW };
+}
+function hitStage(pt) {
+  const L = CUR;
+  if (pt.x >= 0 && pt.x < 194) {
+    if (pt.y >= 0 && pt.y < 374) return { kind: 'field', num: G.me };
+    if (pt.y >= L.inv.y - 2 && pt.y < L.inv.y + 34) return { kind: 'inv' };
+    return null;
+  }
+  const nums = oppCellNums(L);
+  for (let k = 0; k < L.opp.length; k++) {
+    const c = L.opp[k];
+    if (nums[k] && pt.x >= c.x - 1 && pt.x < c.x + L.cw + 1 && pt.y >= c.y && pt.y < c.y + L.capH + L.ch + 2) return { kind: 'opp', num: nums[k], cell: c };
+  }
+  return null;
+}
+function spTargetOk(num) {
+  const me = ME(), t = G.players[num];
+  return !!(me.inv && t && t.present && !t.dead && !(num === G.me && me.inv[0] === 's'));
+}
+function cancelGestures() {
+  for (const g of GEST.values()) if (g.kind === 'field' && g.mode === 'v') softDropUp(ME());
+  GEST.clear();
+  if (DRAG) { DRAG = null; G.dirty = true; }
+}
 stage.addEventListener('pointerdown', e => {
   if (!MOBILE.on || !G.running) return;
   const me = ME();
-  if (!me.present || me.dead || !me.inv) return;
-  const r = stage.getBoundingClientRect(), L = CUR;
-  const x = (e.clientX - r.left) / r.width * L.LW, y = (e.clientY - r.top) / r.height * L.LH;
-  const nums = oppCellNums(L);
-  L.opp.forEach((c, k) => {
-    if (nums[k] && x >= c.x && x < c.x + L.cw && y >= c.y && y < c.y + L.capH + L.ch + 2) useSpecial(me, nums[k]);
-  });
+  const pt = stagePt(e), hit = hitStage(pt);
+  if (!hit) return;
+  if (hit.kind === 'opp') {
+    if (me.present && !me.dead && me.inv && spTargetOk(hit.num)) { useSpecial(me, hit.num); buzz(12); }
+    return;
+  }
+  if (!MOBILE.play || !me.present || me.dead) return;
+  e.preventDefault();
+  try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+  const now = performance.now();
+  if (hit.kind === 'inv') { GEST.set(e.pointerId, { kind: 'inv', x0: e.clientX, y0: e.clientY, drag: false }); return; }
+  GEST.set(e.pointerId, { kind: 'field', x0: e.clientX, y0: e.clientY, t0: now, cell: 16 * pt.k, half: pt.x >= 97 ? 'r' : 'l',
+    mode: '', moved: 0, samples: [[now, e.clientY]] });
 });
+stage.addEventListener('pointermove', e => {
+  const g = GEST.get(e.pointerId);
+  if (!g) return;
+  const me = ME();
+  if (g.kind === 'inv') {
+    if (!g.drag && me.inv && Math.hypot(e.clientX - g.x0, e.clientY - g.y0) > 10) g.drag = true;
+    if (g.drag) {
+      const pt = stagePt(e), hit = hitStage(pt);
+      const num = hit && (hit.kind === 'opp' || hit.kind === 'field') ? hit.num : 0;
+      DRAG = me.inv ? { sp: me.inv[0], x: pt.x, y: pt.y, target: num && spTargetOk(num) ? num : 0 } : null;
+      G.dirty = true;
+    }
+    return;
+  }
+  const now = performance.now();
+  g.samples.push([now, e.clientY]);
+  while (g.samples.length > 2 && now - g.samples[0][0] > 100) g.samples.shift();
+  const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+  // sideways: follow the finger one column at a time
+  const want = Math.trunc(dx / (g.cell * 0.9));
+  while (g.moved < want) { moveRight(me); g.moved++; }
+  while (g.moved > want) { moveLeft(me); g.moved--; }
+  if (g.moved !== 0 && !g.mode) g.mode = 'h';
+  // down: drop faster while the finger stays down
+  if (g.mode !== 'v' && g.moved === 0 && dy > g.cell * 1.2 && dy > Math.abs(dx) * 1.5) { g.mode = 'v'; softDropDown(me); }
+});
+function endGesture(e, cancel) {
+  const g = GEST.get(e.pointerId);
+  if (!g) return;
+  GEST.delete(e.pointerId);
+  const me = ME();
+  if (g.kind === 'inv') {
+    if (g.drag) {
+      const t = DRAG && DRAG.target;
+      DRAG = null; G.dirty = true;
+      if (!cancel && t) { useSpecial(me, t); buzz(15); }
+    } else if (!cancel && me.inv) { fillSheet(); gid('mSheet').hidden = false; }
+    return;
+  }
+  if (g.mode === 'v') softDropUp(me);
+  if (cancel) return;
+  const now = performance.now(), dx = e.clientX - g.x0, dy = e.clientY - g.y0, a = g.samples[0];
+  const vy = now - a[0] > 0 ? (e.clientY - a[1]) / (now - a[0]) : 0;
+  if (dy > 2 * g.cell && vy > 0.7 && dy > Math.abs(dx)) { hardDrop(me); buzz(10); return; }
+  if (!g.mode && Math.hypot(dx, dy) < g.cell * 0.7 && now - g.t0 < 400) rotatePiece(me, g.half === 'r' ? 2 : 4);
+}
+stage.addEventListener('pointerup', e => endGesture(e, false));
+stage.addEventListener('pointercancel', e => endGesture(e, true));
+stage.addEventListener('lostpointercapture', e => endGesture(e, true));
 // special block explanation sheet
 function fillSheet() {
   gid('mSheetBody').innerHTML = '<div class="sp-title">' + gid('spTitle').innerHTML + '</div><div class="sp-desc">' + esc(gid('spDesc').textContent) + '</div>' +
     (gid('spCtx').hidden ? '' : '<div class="sp-ctx">' + gid('spCtx').innerHTML + '</div>') +
-    '<div class="sp-how">Tap a player’s button (or their field) to send it. D discards it.</div>';
+    '<div class="sp-how">Drag it from under your field onto a player’s field (your own field uses it on yourself), or tap their button or field. D discards it.</div>';
 }
 // pointerup, because the pad cancels touchstart (which also cancels click on phones)
 gid('mSp').addEventListener('pointerup', e => { e.preventDefault(); const sh = gid('mSheet'); if (sh.hidden) { fillSheet(); sh.hidden = false; } else sh.hidden = true; });
@@ -2296,6 +2517,8 @@ function updateMobileBar() {
   gid('mNew').hidden = G.running || !mod;
   gid('mPause').hidden = !G.running || !mod;
   gid('mPause').textContent = G.paused ? 'Resume' : 'Pause';
+  gid('mFull').hidden = !canFullscreen;
+  updateRotPrompt();
   if (!gid('mSheet').hidden) fillSheet();
   updateTargets();
   updateResume();

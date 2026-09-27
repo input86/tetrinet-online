@@ -16,14 +16,24 @@ The original game, its design and its name belong to its creator; this port is i
   hit best, which key uses it), the attacks/defenses log and the in-game messages (press **T** to talk).
 - Opponents' fields are drawn 25% larger than in the original, and the playing fields scale to
   fill the browser window.
-- The top window collapses automatically once you start or join a game; **Show** opens it again.
+- The top window collapses automatically once you start or join a game, and the Settings window
+  starts collapsed; **Show** opens either one.
 - Settings that aren't self-explanatory have a **?** button that explains them.
-- **Phones and tablets:** when a game starts, the fields fill the screen with touch controls
-  (◀ ▼ ▶ to move, hold ▼ to drop faster, ⟲ ⟳ to rotate, DROP). The row above shows one button per player:
-  tap it (or tap that player's field) to send your next special block; D discards it; the icon
-  explains what it does. Works in portrait and landscape. **Menu** returns to the lobby and chat;
-  **Back to Game** returns to the game. Opponents are drawn at the original size there.
-  Misc. Settings → Controls can force touch or keyboard controls.
+- **Phones and tablets:** when a game starts, the fields fill the screen with touch controls.
+  - **Phones play sideways.** Holding the phone upright during a game shows a "Turn your phone
+    sideways" screen (offline games pause until you do; online games keep going for everyone
+    else). Where the browser allows it (Android Chrome), the game also switches to full screen and
+    turns to landscape by itself; **⛶** toggles full screen. Menus work either way up. Tablets
+    can play in either orientation; computers are unaffected.
+  - **Gestures on your own field:** drag sideways to move, tap to rotate (right half clockwise,
+    left half counter-clockwise), drag down and hold to drop faster, flick down to drop.
+  - **Buttons** at the sides do the same: ◀ ▶ move, ▼ (hold) drops faster, ⟲ ⟳ rotate, DROP.
+  - **Special blocks:** drag your first special block (under your field) onto a player's field to
+    use it on them — the field lights up; drop it on your own field to use it on yourself. You can
+    also tap a player's button or field. D discards it; tapping the block or its icon explains it.
+  - **Menu** returns to the lobby and chat; **Back to Game** returns to the game. Opponents are
+    drawn at the original size there. Misc. Settings → Controls can force touch or keyboard controls.
+  - No ghost piece, as in the original.
 
 ## Files
 
