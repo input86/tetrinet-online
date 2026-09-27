@@ -9,6 +9,10 @@ A browser port of St0rmCat's TetriNET v1.13 (1997) with a small game server.
 - Up to 6 players per game. The first player in is the moderator (marked `*`): they set the
   rules and press **Start New Game**. If they leave, the next player takes over.
 - Empty games are removed after 2 minutes.
+- **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original 1997 look
+  with the original graphics. It's a per-player choice and doesn't change the game.
+- The box under your field explains the next special block in your inventory: what it does,
+  whether it's an attack or a defense, who it would hit best, and which key uses it.
 
 ## Files
 
@@ -55,4 +59,10 @@ Friends on the same Wi-Fi can join at `http://YOUR-PC-IP:3000`.
 
 ## Updating
 
-Edit files on GitHub (or upload new versions). Render redeploys automatically on every commit.
+1. On GitHub, open your repository and choose **Add file → Upload files**.
+2. Drag in the new files (for this update: `public/index.html` and `README.md`; if in doubt,
+   upload everything again except `node_modules`). Files with the same name are replaced.
+3. **Commit changes**. Render notices the commit and redeploys by itself (watch the
+   **Events** tab on your service; it takes 1–3 minutes). If auto-deploy is off, press
+   **Manual Deploy → Deploy latest commit**.
+4. Reload the game page. Games that were running are ended by the redeploy.
