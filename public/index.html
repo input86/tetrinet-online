@@ -89,7 +89,9 @@
   .stage-wrap { background: var(--face); padding: 2px; }
   #stage { display: block; margin: 0 auto; cursor: default; touch-action: manipulation; max-width: 100%; }
   [hidden] { display: none !important; }
-  #chat { display: block; width: 100%; font: 12px Arial, sans-serif; border: 1px solid var(--lo); padding: 3px 5px; margin-top: 4px; }
+  .chatrow { display: flex; gap: 6px; margin-top: 4px; }
+  .chatrow button { flex: none; }
+  #chat { display: block; flex: 1; min-width: 0; width: auto; font: 12px Arial, sans-serif; border: 1px solid var(--lo); padding: 3px 5px; margin-top: 4px; }
   .playarea { display: flex; gap: 10px; align-items: stretch; }
   .playarea .stage-wrap { flex: 1 1 auto; min-width: 0; display: flex; justify-content: center; align-items: flex-start; }
   .side { flex: 0 0 clamp(250px, 24vw, 380px); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
@@ -414,7 +416,7 @@
         <div class="pl-wrap">
           <div id="pline" class="pline" aria-live="polite"></div>
           <form id="plineForm" autocomplete="off" style="display:flex;gap:6px;margin-top:6px">
-            <input id="plineIn" type="text" maxlength="300" placeholder="Talk on the partyline (/me for actions)" style="flex:1" aria-label="Partyline message">
+            <input id="plineIn" type="text" maxlength="300" enterkeyhint="send" placeholder="Talk on the partyline (/me for actions)" style="flex:1" aria-label="Partyline message">
             <button type="submit">Send</button>
           </form>
         </div>
@@ -461,7 +463,7 @@
         <div class="side-block grow">
           <div class="side-h">Messages</div>
           <div class="msgs" id="msgLog" aria-live="polite"></div>
-          <input id="chat" type="text" maxlength="200" placeholder="Press T to talk, Enter to send, Esc to return" aria-label="Game message">
+          <form id="chatForm" class="chatrow" autocomplete="off"><input id="chat" type="text" maxlength="200" enterkeyhint="send" placeholder="Press T to talk, Enter to send" aria-label="Game message"><button type="submit">Send</button></form>
         </div>
       </aside>
     </div>
@@ -1790,7 +1792,7 @@ const cx = stage.getContext('2d');
    - mobile portrait:  1 x 2, 2 x 2 or 2 x 3 grid (by number of opponents), original 8px cells
    - mobile landscape: 3 x 2 grid, original 8px cells                                        */
 let SC = 2;
-const MOBILE = { on: false, play: false, land: false };
+const MOBILE = { on: false, play: false, land: false, touchSeen: false };
 const LAYOUT_D = (() => {
   const cellX = [200, 323, 446], cellY = [1, 243], cell = (c, r) => ({ x: cellX[c], y: cellY[r] });
   return { name: 'desktop', mobile: false, LW: 567, LH: 482, s: 10, cw: W * 10, ch: H * 10, capH: 18,
@@ -2139,9 +2141,21 @@ const gid = id => document.getElementById(id);
 function detectTouchUI() {
   if (S.ui === 'mobile') return true;
   if (S.ui === 'desktop') return false;
+  if (MOBILE.touchSeen) return true;                // someone touched the page: they need touch controls
   const mq = q => !!(window.matchMedia && window.matchMedia(q).matches);
-  return mq('(pointer: coarse)') && !mq('(any-pointer: fine)');
+  const ua = navigator.userAgent || '';
+  const uaMobile = (navigator.userAgentData && navigator.userAgentData.mobile) || /Android|iPhone|iPad|iPod|Mobile|Silk|Kindle/i.test(ua);
+  const iPadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  // Samsung phones (S Pen, DeX support) report a "fine" pointer too, so don't require its absence
+  return uaMobile || iPadOS || (mq('(pointer: coarse)') && navigator.maxTouchPoints > 0);
 }
+// fail-safe: the first real finger touch switches to touch controls (unless the player chose Keyboard)
+document.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch' && !MOBILE.touchSeen && (S.ui || 'auto') === 'auto') {
+    MOBILE.touchSeen = true;
+    if (!MOBILE.on) { updateMobileMode(); fitStage(); }
+  }
+}, true);
 function updateMobileMode() {
   const on = detectTouchUI(), land = window.innerWidth > window.innerHeight;
   MOBILE.land = land;
@@ -2290,17 +2304,21 @@ function updateMobileBar() {
 // chat ('T')
 const chat = document.getElementById('chat');
 function openChat() { chat.focus(); }
+// Sent through a form so phone keyboards show a Send key (a lone input shows "Next")
+document.getElementById('chatForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = chat.value.trim();
+  if (t) {
+    const me = ME();
+    const act = /^\/me\s+/i.test(t), body = t.replace(/^\/me\s+/i, '');
+    if (NET.online) netSend({ t: 'gmsg', text: body, act });
+    else { addMsg(act ? '* ' + me.name + ' ' + body : '<' + me.name + '> ' + t); sfx(me, 9); }
+  }
+  chat.value = '';
+  if (G.running && !MOBILE.on) stage.focus(); else chat.blur();
+});
 chat.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const t = chat.value.trim();
-    if (t) {
-      const me = ME();
-      const act = /^\/me\s+/i.test(t), body = t.replace(/^\/me\s+/i, '');
-      if (NET.online) netSend({ t: 'gmsg', text: body, act });
-      else { addMsg(act ? '* ' + me.name + ' ' + body : '<' + me.name + '> ' + t); sfx(me, 9); }
-    }
-    chat.value = ''; if (G.running) stage.focus(); e.preventDefault();
-  } else if (e.key === 'Escape') { stage.focus(); e.preventDefault(); }
+  if (e.key === 'Escape') { stage.focus(); e.preventDefault(); }
   e.stopPropagation();
 });
 
