@@ -11,8 +11,11 @@ A browser port of St0rmCat's TetriNET v1.13 (1997) with a small game server.
 - Empty games are removed after 2 minutes.
 - **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original 1997 look
   with the original graphics. It's a per-player choice and doesn't change the game.
-- The box under your field explains the next special block in your inventory: what it does,
-  whether it's an attack or a defense, who it would hit best, and which key uses it.
+- The side column shows the next special block (what it does, attack or defense, who it would
+  hit best, which key uses it), the attacks/defenses log and the in-game messages (press **T** to talk).
+- Opponents' fields are drawn 25% larger than in the original, and the playing fields scale to
+  fill the browser window.
+- The top window collapses automatically once you start or join a game; **Show** opens it again.
 
 ## Files
 
