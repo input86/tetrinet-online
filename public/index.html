@@ -1,4 +1,12 @@
-<title>TetriNET 1.13</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#02040a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>TetriNET</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&display=swap">
@@ -20,7 +28,10 @@
     --warn: #a00000;
     --ok: #006400;
   }
-  html, body { height: auto; }
+  *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: auto; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     background: var(--desk);
     background-image: radial-gradient(circle at 50% 0%, #108080 0%, var(--desk) 55%, var(--desk-deep) 100%);
@@ -94,9 +105,68 @@
   .win.collapsed > :not(.titlebar) { display: none !important; }
   .titlebar .room-mini { font-weight: normal; opacity: .9; }
 
-  .touch { display: none; gap: 6px; padding: 6px 2px 2px; flex-wrap: wrap; justify-content: center; }
-  .touch button { min-width: 52px; min-height: 44px; font-weight: bold; }
-  @media (pointer: coarse) { .touch { display: flex; } }
+  /* ---------- phone / tablet play mode ---------- */
+  .mbar, .mctl-sp, .mctl-l, .mctl-r { display: none; }
+  .mresume { position: fixed; z-index: 90; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); min-height: 48px; padding: 8px 20px; font-weight: bold; font-size: 15px; }
+  body.playmode { overflow: hidden; overscroll-behavior: none; }
+  body.playmode #app > :not(#fieldsWin), body.playmode .modebar, body.playmode #helpPop { display: none !important; }
+  body.playmode #fieldsWin {
+    position: fixed; inset: 0; z-index: 100; margin: 0; border-radius: 0; box-shadow: none;
+    display: grid; gap: 6px; overflow: hidden;
+    padding: calc(4px + env(safe-area-inset-top, 0px)) calc(6px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(6px + env(safe-area-inset-left, 0px));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "bar bar" "stage stage" "sp sp" "left right";
+    touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  body.playmode #fieldsWin > .titlebar, body.playmode #fieldsWin > .toolbar, body.playmode #fieldsWin > .legend-keys, body.playmode .side { display: none !important; }
+  body.playmode .playarea { grid-area: stage; min-height: 0; min-width: 0; display: block; }
+  body.playmode .stage-wrap { width: 100%; height: 100%; align-items: center; justify-content: center; }
+  body.playmode #stage { touch-action: none; }
+  body.playmode .mbar { grid-area: bar; display: flex; align-items: center; gap: 6px; }
+  body.playmode .mbar .mstatus { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold; }
+  body.playmode .mbar button { min-height: 32px; padding: 2px 10px; }
+  body.playmode .mctl-sp { grid-area: sp; display: flex; gap: 5px; align-items: stretch; }
+  body.playmode .mtargets { flex: 1; display: flex; gap: 5px; min-width: 0; }
+  body.playmode .mtargets button { flex: 1 1 0; min-width: 0; padding: 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; line-height: 1.1; }
+  body.playmode .mtargets button small { display: block; font-size: 10px; opacity: .85; overflow: hidden; text-overflow: ellipsis; }
+  body.playmode .mctl-sp button { min-height: 46px; }
+  body.playmode .msp { width: 50px; flex: none; padding: 0; display: flex; align-items: center; justify-content: center; }
+  body.playmode .msp canvas { width: 32px; height: 32px; image-rendering: pixelated; }
+  body.playmode .mdisc { width: 46px; flex: none; padding: 0; font-weight: bold; }
+  body.playmode .mctl-l, body.playmode .mctl-r { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  body.playmode .mctl-l { grid-area: left; } body.playmode .mctl-r { grid-area: right; }
+  body.playmode .mctl-l button, body.playmode .mctl-r button { min-height: 58px; font-size: 24px; font-weight: bold; padding: 0; touch-action: none; }
+  body.playmode .mctl-r .mdrop { font-size: 14px; letter-spacing: .06em; }
+  body.playmode button.on { filter: brightness(1.35); }
+  body.playmode.landscape #fieldsWin {
+    grid-template-columns: minmax(112px, 18vw) minmax(0, 1fr) minmax(132px, 21vw);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: "bar stage sp" "left stage right";
+  }
+  body.playmode.landscape .mbar { flex-wrap: wrap; align-content: flex-start; align-self: start; }
+  body.playmode.landscape .mbar .mstatus { flex: 1 1 100%; white-space: normal; font-size: 12px; }
+  body.playmode.landscape .mctl-l { grid-template-columns: 1fr 1fr; align-content: end; }
+  body.playmode.landscape .mctl-l [data-k="soft"] { grid-column: 1 / span 2; grid-row: 2; }
+  body.playmode.landscape .mctl-r { grid-template-columns: 1fr 1fr; }
+  body.playmode.landscape .mctl-r .mdrop { grid-column: 1 / span 2; }
+  body.playmode.landscape .mctl-sp { flex-wrap: wrap; align-content: flex-start; align-self: start; }
+  body.playmode.landscape .mtargets { flex: 1 1 100%; order: 3; flex-wrap: wrap; }
+  body.playmode.landscape .mtargets button { flex: 1 1 40%; min-height: 40px; }
+  body.playmode.landscape .msp, body.playmode.landscape .mdisc { flex: 1; }
+  body.playmode .msheet { grid-area: stage; align-self: start; justify-self: stretch; z-index: 5; margin: 6px; padding: 10px 12px; background: #ffffe1; color: #000; border: 1px solid #000; box-shadow: 2px 3px 0 rgba(0,0,0,.35); font: 14px/1.4 Arial, sans-serif; max-height: 100%; overflow: auto; }
+  body.playmode .msheet button { margin-top: 8px; min-height: 40px; }
+  body.modern.playmode .msheet { background: #050b18; color: #d6fbff; border: 1px solid #ff3df2; box-shadow: 0 0 16px rgba(255,61,242,.35); font-family: Rajdhani, Arial, sans-serif; font-size: 15px; }
+  body.modern.playmode #fieldsWin { border: 0; }
+  body.modern .mresume { background: #041824; color: #fff; border-color: #00e5ff; box-shadow: 0 0 16px rgba(0,229,255,.6); }
+  .mresume { background: var(--face); }
+  body.modern .mbar .mstatus { color: #00e5ff; font-family: Orbitron, Rajdhani, sans-serif; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  body.modern .mctl-l button, body.modern .mctl-r button { font-size: 24px; }
+  body.modern .mctl-r .mdrop { color: #ff6ef5; border-color: #ff3df2; box-shadow: 0 0 8px rgba(255,61,242,.35); font-size: 14px; }
+  body.modern .mtargets button.atk { border-color: #ff4d6d; color: #ffc2cd; }
+  body.modern .mtargets button.def { border-color: #39ff88; color: #c9ffe0; }
+  body:not(.modern) .mtargets button.atk { color: #800000; }
+  body:not(.modern) .mtargets button.def { color: #005000; }
 
   .tabs { display: flex; flex-wrap: wrap; gap: 2px; padding: 6px 4px 0; }
   .tab {
@@ -159,6 +229,13 @@
   .badge { font-size: 11px; font-weight: bold; padding: 1px 6px; border: 1px solid; }
   .badge.pub { background: #d8f0d8; border-color: #006400; color: #004000; }
   .badge.priv { background: #f6dede; border-color: #800000; color: #600000; }
+  .lab { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .lab label { flex: 0 1 auto; }
+  .help { min-height: 0; width: 18px; height: 18px; padding: 0; border-radius: 50%; font: bold 11px/16px Arial, sans-serif; text-align: center; flex: none; cursor: help; vertical-align: middle; }
+  body:not(.modern) .help { background: #ffffe1; border: 1px solid #000; box-shadow: none; }
+  .helppop { position: fixed; z-index: 200; max-width: min(320px, calc(100vw - 24px)); background: #ffffe1; color: #000; border: 1px solid #000; box-shadow: 2px 3px 0 rgba(0,0,0,.3); padding: 8px 10px; font: 12px/1.45 Arial, sans-serif; }
+  body.modern .help { border-radius: 50%; padding: 0; font-family: Arial, sans-serif; letter-spacing: 0; }
+  body.modern .helppop { background: #050b18; color: #d6fbff; border: 1px solid #ff3df2; box-shadow: 0 0 16px rgba(255,61,242,.35); font-family: Rajdhani, Arial, sans-serif; font-size: 14px; }
   .joinrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
   .lobby { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 10px; margin-top: 10px; }
   @media (max-width: 620px) { .lobby { grid-template-columns: 1fr; } }
@@ -256,7 +333,11 @@
   body.modern details summary { color: #7fbccc; }
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
+</head>
+<body>
 
+<div id="helpPop" class="helppop" role="tooltip" hidden></div>
+<button type="button" id="mResume" class="mresume" hidden>▶ Back to Game</button>
 <div id="app">
   <div class="modebar"><span id="modeLabel">Display</span>
     <span class="seg" role="group" aria-labelledby="modeLabel">
@@ -349,7 +430,7 @@
     </div>
     </div>
   </section>
-  <section class="win" aria-label="TetriNET Playing Fields">
+  <section class="win" id="fieldsWin" aria-label="TetriNET Playing Fields">
     <div class="titlebar"><span class="grow">TetriNET Playing Fields</span></div>
     <div class="toolbar">
       <button id="btnStart" type="button">Start New Game</button>
@@ -384,21 +465,37 @@
         </div>
       </aside>
     </div>
-    <div class="touch" id="touch" aria-label="Touch controls">
-      <button type="button" data-k="left">◀</button>
-      <button type="button" data-k="rotr">⟳</button>
-      <button type="button" data-k="rotl">⟲</button>
-      <button type="button" data-k="right">▶</button>
-      <button type="button" data-k="soft">▼</button>
-      <button type="button" data-k="drop">Drop</button>
-      <button type="button" data-k="t1">1</button><button type="button" data-k="t2">2</button><button type="button" data-k="t3">3</button><button type="button" data-k="t4">4</button><button type="button" data-k="t5">5</button><button type="button" data-k="t6">6</button>
-      <button type="button" data-k="disc">D</button>
+    <!-- phone / tablet play mode -->
+    <div class="mbar" id="mbar">
+      <span class="mstatus" id="mStatus">Not Playing</span>
+      <button type="button" id="mNew">New Game</button>
+      <button type="button" id="mPause">Pause</button>
+      <button type="button" id="mExit">Menu</button>
+    </div>
+    <div class="mctl-sp" id="mctlSp" aria-label="Special blocks">
+      <button type="button" class="msp" id="mSp" aria-label="What does my next special block do?"><canvas id="mSpIcon" width="32" height="32" aria-hidden="true"></canvas></button>
+      <div class="mtargets" id="mTargets"></div>
+      <button type="button" class="mdisc" data-k="disc" aria-label="Discard special block">D</button>
+    </div>
+    <div class="mctl-l" id="mctlL" aria-label="Move">
+      <button type="button" data-k="left" aria-label="Move left">◀</button>
+      <button type="button" data-k="soft" aria-label="Drop faster (hold)">▼</button>
+      <button type="button" data-k="right" aria-label="Move right">▶</button>
+    </div>
+    <div class="mctl-r" id="mctlR" aria-label="Rotate and drop">
+      <button type="button" data-k="rotl" aria-label="Rotate left">⟲</button>
+      <button type="button" data-k="rotr" aria-label="Rotate right">⟳</button>
+      <button type="button" data-k="drop" class="mdrop" aria-label="Drop">DROP</button>
+    </div>
+    <div class="msheet" id="mSheet" hidden>
+      <div id="mSheetBody"></div>
+      <button type="button" id="mSheetClose">Close</button>
     </div>
     <div class="legend-keys" id="legendKeys"></div>
   </section>
 
-  <section class="win" aria-label="TetriNET v1.13">
-    <div class="titlebar"><span class="grow">TetriNET v1.13 — Settings</span><button type="button" class="collapse" data-collapse aria-expanded="true" aria-controls="settingsBody" title="Hide">Hide ▴</button></div>
+  <section class="win" aria-label="TetriNET Settings">
+    <div class="titlebar"><span class="grow">TetriNET — Settings</span><button type="button" class="collapse" data-collapse aria-expanded="true" aria-controls="settingsBody" title="Hide">Hide ▴</button></div>
     <div id="settingsBody">
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-server" aria-selected="true" aria-controls="p-server" type="button">Server Settings</button>
@@ -411,26 +508,26 @@
     <div class="panel" role="tabpanel" id="p-server" aria-labelledby="tab-server">
       <div class="cols">
         <fieldset>
-          <legend>Server Settings</legend>
+          <legend>Server Settings <button type="button" class="help" aria-label="What does this mean?" data-help="These rules are used for offline games and, online, for games started by the moderator (the first player in a room, marked *). Other players' settings are ignored while they are in someone else's room.">?</button></legend>
           <div class="row"><label for="s_nick">Your Nickname:</label><input id="s_nick" type="text" maxlength="30" style="width:150px"></div>
-          <div class="row"><label for="s_team">Team You Are Playing On (Blank For None):</label><input id="s_team" type="text" maxlength="30" style="width:110px"></div>
-          <div class="row"><label for="s_classic">Classic Style Multiplayer Rules:</label><input id="s_classic" type="checkbox"></div>
-          <div class="row"><label for="s_startlvl">Starting Level:</label><input id="s_startlvl" type="number" min="1" max="100"></div>
-          <div class="row"><label for="s_linesper">Lines to Make Before Level Increase:</label><input id="s_linesper" type="number" min="1" max="100"></div>
-          <div class="row"><label for="s_lvlinc">Number of Levels to Increase Each Time:</label><input id="s_lvlinc" type="number" min="0" max="50"></div>
-          <div class="row"><label for="s_avg">All Have Players' Averaged Levels:</label><input id="s_avg" type="checkbox"></div>
-          <div class="row"><label for="s_specper">Lines to Make For Special Block:</label><input id="s_specper" type="number" min="1" max="50"></div>
-          <div class="row"><label for="s_speccnt">Number of Special Blocks Added Each Time:</label><input id="s_speccnt" type="number" min="0" max="50"></div>
-          <div class="row"><label for="s_cap">Capacity of Special Block Inventory:</label><input id="s_cap" type="number" min="0" max="18"></div>
-          <div class="row"><label for="s_min">Minutes Before Lines Start Being Added:</label><input id="s_min" type="number" min="0" max="60"></div>
-          <div class="row"><label for="s_sec">Seconds Between Lines Being Added:</label><input id="s_sec" type="number" min="1" max="300"></div>
+          <div class="row"><span class="lab"><label for="s_team">Team You Are Playing On (Blank For None):</label><button type="button" class="help" aria-label="What does this mean?" data-help="Players who type the same team name play together. When only one team is left standing, the whole team wins, teammates never receive each other's classic-rule lines, and the team scores as one entry (marked &lt;T&gt;) on the win list. Leave it blank to play on your own.">?</button></span><input id="s_team" type="text" maxlength="30" style="width:110px"></div>
+          <div class="row"><span class="lab"><label for="s_classic">Classic Style Multiplayer Rules:</label><button type="button" class="help" aria-label="What does this mean?" data-help="Plays like two-player Game Boy Tetris. Clearing 2 lines at once adds 1 junk line to every opponent, 3 lines adds 2, and 4 lines adds 4. Clearing a single line sends nothing, and teammates are never hit. Works best with Number of Special Blocks Added Each Time set to 0.">?</button></span><input id="s_classic" type="checkbox"></div>
+          <div class="row"><span class="lab"><label for="s_startlvl">Starting Level:</label><button type="button" class="help" aria-label="What does this mean?" data-help="The level everyone starts at. Pieces fall one row every 1010 − 10 × level milliseconds, so level 1 is one row per second and level 100 is about 10 ms per row.">?</button></span><input id="s_startlvl" type="number" min="1" max="100"></div>
+          <div class="row"><span class="lab"><label for="s_linesper">Lines to Make Before Level Increase:</label><button type="button" class="help" aria-label="What does this mean?" data-help="Each time a player's total of cleared lines reaches a multiple of this number, their level goes up and their pieces fall faster.">?</button></span><input id="s_linesper" type="number" min="1" max="100"></div>
+          <div class="row"><span class="lab"><label for="s_lvlinc">Number of Levels to Increase Each Time:</label><button type="button" class="help" aria-label="What does this mean?" data-help="How many levels a player gains each time the line count above is reached. 0 keeps everyone at the starting level for the whole game.">?</button></span><input id="s_lvlinc" type="number" min="0" max="50"></div>
+          <div class="row"><span class="lab"><label for="s_avg">All Have Players' Averaged Levels:</label><button type="button" class="help" aria-label="What does this mean?" data-help="When on, everyone's pieces fall at the same speed: the average level of all players still alive, recalculated whenever someone levels up. When off, each player falls at their own level.">?</button></span><input id="s_avg" type="checkbox"></div>
+          <div class="row"><span class="lab"><label for="s_specper">Lines to Make For Special Block:</label><button type="button" class="help" aria-label="What does this mean?" data-help="Each time a player's total of cleared lines reaches a multiple of this number, special blocks appear in their field.">?</button></span><input id="s_specper" type="number" min="1" max="50"></div>
+          <div class="row"><span class="lab"><label for="s_speccnt">Number of Special Blocks Added Each Time:</label><button type="button" class="help" aria-label="What does this mean?" data-help="How many special blocks appear each time. They replace random normal blocks already in that player's field, or appear on the bottom row if the field is empty. 0 turns special blocks off.">?</button></span><input id="s_speccnt" type="number" min="0" max="50"></div>
+          <div class="row"><span class="lab"><label for="s_cap">Capacity of Special Block Inventory:</label><button type="button" class="help" aria-label="What does this mean?" data-help="The most special blocks a player can hold at once (up to 18). When the inventory is full, newly collected ones are lost until you use or discard some.">?</button></span><input id="s_cap" type="number" min="0" max="18"></div>
+          <div class="row"><span class="lab"><label for="s_min">Minutes Before Lines Start Being Added:</label><button type="button" class="help" aria-label="What does this mean?" data-help="Keeps long games from dragging on: once this many minutes have passed, a junk line is added to every player still in the game, repeating at the interval below. 0 turns this off.">?</button></span><input id="s_min" type="number" min="0" max="60"></div>
+          <div class="row"><span class="lab"><label for="s_sec">Seconds Between Lines Being Added:</label><button type="button" class="help" aria-label="What does this mean?" data-help="After the minutes above have passed, how often a junk line is added to every player still in the game.">?</button></span><input id="s_sec" type="number" min="1" max="300"></div>
         </fieldset>
         <fieldset>
           <legend>Players</legend>
           <div class="grid-players" id="playersGrid">
-            <span class="hdr">#</span><span class="hdr">Nickname</span><span class="hdr">Team</span><span class="hdr hide-sm">Skill</span><span class="hdr hide-sm">Stack</span>
+            <span class="hdr">#</span><span class="hdr">Nickname</span><span class="hdr">Team</span><span class="hdr hide-sm">Skill <button type="button" class="help" aria-label="What does this mean?" data-help="How fast and how well that computer opponent plays. Easy thinks for about a second per piece and makes mistakes; Expert places pieces almost instantly and plays close to perfectly.">?</button></span><span class="hdr hide-sm">Stack <button type="button" class="help" aria-label="What does this mean?" data-help="Stack Height at Start: that player begins with this many rows of random junk at the bottom of their field (0–22), each row with at least one gap. Use it as a handicap for stronger players. Online, the host's values apply to seats 1–6.">?</button></span>
           </div>
-          <p class="note" style="margin:10px 0 0">Player 1 is you. Players 2–6 are computer opponents that play by the same rules as you: same pieces, same speed, same specials. The original 1997 client did not have them; they stand in for the other people on the server. Tick a row to add that opponent, or untick all of them to practise alone. Computer opponents are only used offline; online, the seats are filled by the people who joined. <b>Stack</b> is the “Stack Height at Start” for that player.</p>
+          <p class="note" style="margin:10px 0 0">Player 1 is you. Players 2–6 are computer opponents that play by the same rules as you: same pieces, same speed, same specials. The original game did not have them; they stand in for the other people on the server. Tick a row to add that opponent, or untick all of them to practise alone. Computer opponents are only used offline; online, the seats are filled by the people who joined. <b>Stack</b> is the “Stack Height at Start” for that player.</p>
         </fieldset>
       </div>
     </div>
@@ -438,12 +535,12 @@
     <div class="panel" role="tabpanel" id="p-occ" aria-labelledby="tab-occ" hidden>
       <div class="cols">
         <fieldset>
-          <legend>Occurancy of Special Blocks: (in Percent)</legend>
+          <legend>Occurancy of Special Blocks: (in Percent) <button type="button" class="help" aria-label="What does this mean?" data-help="Whenever special blocks are added to a field, each one is picked at random with these odds. A higher number makes that special more common; 0 means it never appears. The column must add up to exactly 100.">?</button></legend>
           <div id="occSpecials"></div>
           <div class="row"><label>Total Percent:</label><span class="total" id="totSpec">100</span></div>
         </fieldset>
         <fieldset>
-          <legend>Occurancy of Pieces: (in Percent)</legend>
+          <legend>Occurancy of Pieces: (in Percent) <button type="button" class="help" aria-label="What does this mean?" data-help="The chance that each new piece is of this shape. Every new piece also starts in a random orientation. The column must add up to exactly 100.">?</button></legend>
           <div id="occPieces"></div>
           <div class="row"><label>Total Percent:</label><span class="total" id="totPiece">100</span></div>
         </fieldset>
@@ -465,6 +562,7 @@
         </fieldset>
         <fieldset>
           <legend>Sound and Theme</legend>
+          <div class="row"><span class="lab"><label for="s_ui">Controls:</label><button type="button" class="help" aria-label="What does this mean?" data-help="Automatic uses on-screen touch controls on phones and tablets, and the keyboard everywhere else. Choose Touch screen or Keyboard to override it, for example on a touch-screen laptop.">?</button></span><select id="s_ui"><option value="auto">Automatic</option><option value="mobile">Touch screen</option><option value="desktop">Keyboard</option></select></div>
           <div class="row"><label for="s_sound">Sound Effects Activated</label><input id="s_sound" type="checkbox"></div>
           <div class="row"><label for="s_music">Play MIDI Music During Game</label><input id="s_music" type="checkbox"></div>
           <p class="note" style="margin:2px 0 8px">Music: “The Dance of the Spheres” by Davie M Karlsson (Mind Xpander Productions, 1996), the <kbd>tetrinet.mid</kbd> that ships with the game, played through a small built-in synthesizer.</p>
@@ -487,17 +585,18 @@
     </div>
 
     <div class="panel" role="tabpanel" id="p-about" aria-labelledby="tab-about" hidden>
-      <p class="note" style="margin-top:0"><b>TetriNET v1.13 PUBLIC</b>, © 1997 St0rmCat. This is a browser port rebuilt from the game logic inside <kbd>TETRINET.EXE</kbd> (a Delphi 2 program): the seven piece definitions, spawn in a random orientation, rotation with wall kicks against the side walls only, the drop timer of <kbd>1010 − 10 × level</kbd> ms, one extra drop tick before a piece locks, 100 ms soft drop, the one‑second wait between pieces, Delphi's own random number generator, and each special block exactly as the original executes it.</p>
-      <p class="note"><b>Keys:</b> arrows move/rotate/soft‑drop, <kbd>Ctrl</kbd> rotates left, <kbd>Space</kbd> drops, <kbd>1</kbd>–<kbd>6</kbd> use your first special on that player (your own number for good blocks), <kbd>D</kbd> discards it, <kbd>T</kbd> talks. <kbd>P</kbd> pauses (the original only had a button for this).</p>
+      <p class="note" style="margin-top:0"><b>In honor of the original.</b> TetriNET was created by <b>St0rmCat</b> in 1997 and became one of the great multiplayer games of the early internet: six players, special blocks, and endless late nights on IRC servers. The game, its design and its name belong to its creator, and every idea you play here is theirs. Thank you, St0rmCat.</p>
+      <p class="note"><b>About this version.</b> This is a new, independent web port of that original creation, rebuilt so it can be played in a browser and online today. It is not made or endorsed by St0rmCat. The rules follow the original program closely: the seven pieces and their random starting orientation, rotation, drop speed by level, the short delay before a piece locks, soft drop, the pause between pieces, and every special block behave as they did in the original. What's new here: online game rooms with public and private games and invite links, computer opponents for practice, larger opponent fields, the Modern display, and the special-block guide.</p>
+      <p class="note"><b>Keys:</b> arrows move/rotate/soft‑drop, <kbd>Ctrl</kbd> rotates left, <kbd>Space</kbd> drops, <kbd>1</kbd>–<kbd>6</kbd> use your first special on that player (your own number for good blocks), <kbd>D</kbd> discards it, <kbd>T</kbd> talks. <kbd>P</kbd> pauses.</p>
       <p class="note"><b>Special blocks:</b> A Add Line, C Clear Line, N Nuke Field, R Random Blocks Clear, S Switch Fields, B Clear Special Blocks, G Block Gravity, Q Blockquake, O Block Bomb.</p>
-      <p class="note" style="margin-bottom:0"><b>Online play</b> goes through a small WebSocket server (<kbd>server.js</kbd>) that does the job of the original TetriNET server: one session, up to six players, the first player in is the moderator. Offline, computer opponents take the empty seats. The original clients cannot connect to it, because a web page cannot use raw TCP port 31457.</p>
+      <p class="note" style="margin-bottom:0"><b>Online play</b> goes through a small WebSocket server (<kbd>server.js</kbd>): any number of games, up to six players each, and the first player in is the moderator. Offline, computer opponents take the empty seats.</p>
     </div>
     </div>
   </section>
 </div>
 
 <script>
-/* Original TetriNET v1.13 data folder: tnetblks graphics, 1-10.WAV, tetrinet.mid */
+/* Original TetriNET data folder: tnetblks graphics, 1-10.WAV, tetrinet.mid */
 const ASSETS = {
   bmp: "data:image/jpeg;base64,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",
   wav: [
@@ -518,7 +617,7 @@ const ASSETS = {
 <script>
 'use strict';
 /* ==========================================================================
-   TetriNET 1.13 — browser port.
+   TetriNET — web port.
    Engine functions below are line-for-line ports of routines in TETRINET.EXE;
    the original address of each routine is noted beside it.
    ========================================================================== */
@@ -627,13 +726,13 @@ const DEFAULTS = {
   // specials a c n r s b g q o
   specials: [19, 16, 3, 14, 3, 14, 6, 11, 14],
   keys: ['ArrowUp', 'Control', 'ArrowDown', ' ', 'ArrowLeft', 'ArrowRight'],
-  sound: true, music: true, mode: 'modern',
+  sound: true, music: true, mode: 'modern', ui: 'auto',
   bots: [
-    { on: true,  name: 'St0rmCat', team: '', skill: 1 },
-    { on: true,  name: 'Darktick', team: '', skill: 1 },
-    { on: false, name: 'myname',   team: '', skill: 0 },
-    { on: false, name: '[bart]',   team: '', skill: 2 },
-    { on: false, name: 'Galardo',  team: '', skill: 2 }
+    { on: true,  name: 'Nova',   team: '', skill: 1 },
+    { on: true,  name: 'Pixel',  team: '', skill: 1 },
+    { on: false, name: 'Vector', team: '', skill: 0 },
+    { on: false, name: 'Quasar', team: '', skill: 2 },
+    { on: false, name: 'Blip',   team: '', skill: 2 }
   ]
 };
 const S = Object.assign(JSON.parse(JSON.stringify(DEFAULTS)), store.get('tnet113.settings', {}));
@@ -1160,9 +1259,10 @@ function beginGame(cfg, roster) {           // offline start, or "newgame" from 
   }
   G.dirty = true;
   updateButtons();
-  if (me.present) {
+  if (MOBILE.on) enterPlay();
+  else if (me.present) {
     const sec = stage.closest('section'), r = sec.getBoundingClientRect();
-    if (r.top < 0 || r.top > window.innerHeight * 0.35) sec.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (r.top < 0 || r.top > 12) sec.scrollIntoView({ block: 'start', behavior: 'smooth' });
     stage.focus({ preventScroll: true });
   }
   requestAnimationFrame(fitStage);
@@ -1536,7 +1636,7 @@ function musicStop() { musicHalt(); MUSIC.pos = 0; }
 /* ==========================================================================
    Graphics: built-in theme, or tnetblks.bmp if loaded
    ========================================================================== */
-const THEME = { big: [], small: [], bg: null, sbg: null, custom: false };
+const THEME = { big: [], small: [], small8: [], bg: null, sbg: null, sbg8: null, custom: false };
 const COLORS = { '1': '#2f5bea', '2': '#f2cf1d', '3': '#1fae3a', '4': '#a13bd0', '5': '#e0302c' };
 function mk(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
 function shade(hex, amt) {
@@ -1584,33 +1684,37 @@ function makeBackground(w, h, cell) {
   return c;
 }
 function builtInTheme() {
-  THEME.big = []; THEME.small = [];
+  THEME.big = []; THEME.small = []; THEME.small8 = [];
   for (const ch of BLOCKCHARS) {
     const b = mk(16, 16); drawBlockSprite(b.getContext('2d'), ch, 16); THEME.big.push(b);
     const s = mk(SMALL, SMALL); drawBlockSprite(s.getContext('2d'), ch, SMALL); THEME.small.push(s);
+    const s8 = mk(8, 8); drawBlockSprite(s8.getContext('2d'), ch, 8); THEME.small8.push(s8);
   }
+  THEME.sbg8 = makeBackground(96, 176, 8);
   THEME.bg = makeBackground(192, 352, 16);
   THEME.sbg = makeBackground(W * SMALL, H * SMALL, SMALL);
   THEME.custom = false;
   G.dirty = true;
 }
 function themeFromBitmap(img, original) {        // layout used by 0x442768 (small background at x = W*16)
-  THEME.big = []; THEME.small = [];
+  THEME.big = []; THEME.small = []; THEME.small8 = [];
   for (let i = 0; i < 14; i++) {
     const b = mk(16, 16); b.getContext('2d').drawImage(img, i * 16, 0, 16, 16, 0, 0, 16, 16); THEME.big.push(b);
     const s = mk(SMALL, SMALL), sx = s.getContext('2d'); sx.imageSmoothingEnabled = true; sx.imageSmoothingQuality = 'high';
     sx.drawImage(img, i * 16, 0, 16, 16, 0, 0, SMALL, SMALL); THEME.small.push(s);   // bigger opponent fields: scale the 16px blocks down
+    const s8 = mk(8, 8); s8.getContext('2d').drawImage(img, i * 8, 16, 8, 8, 0, 0, 8, 8); THEME.small8.push(s8);      // original 8px blocks
   }
   const bg = mk(192, 352); bg.getContext('2d').drawImage(img, 0, 24, 192, 352, 0, 0, 192, 352); THEME.bg = bg;
   const sb = mk(W * SMALL, H * SMALL), sbx = sb.getContext('2d'); sbx.imageSmoothingEnabled = true; sbx.imageSmoothingQuality = 'high';
   sbx.drawImage(img, W * 16, 24, 96, 176, 0, 0, W * SMALL, H * SMALL); THEME.sbg = sb;
+  const sb8 = mk(96, 176); sb8.getContext('2d').drawImage(img, W * 16, 24, 96, 176, 0, 0, 96, 176); THEME.sbg8 = sb8;
   THEME.custom = !original;
   G.dirty = true;
 }
 builtInTheme();
 
 /* ---------- Modern (neon grid) theme ---------- */
-const THEME_M = { big: [], small: [], bg: null, sbg: null };
+const THEME_M = { big: [], small: [], small8: [], bg: null, sbg: null, sbg8: null };
 const NEON = { '1': '#00e5ff', '2': '#ffe600', '3': '#39ff88', '4': '#ff3df2', '5': '#ff7a1a' };
 const SP_KIND = { a: 'attack', c: 'defense', n: 'defense', r: 'attack', s: 'either', b: 'attack', g: 'defense', q: 'attack', o: 'attack' };
 const KIND_COLOR = { attack: '#ff4d6d', defense: '#39ff88', either: '#ffe600' };
@@ -1656,8 +1760,9 @@ function neonBackground(w, h, cell) {
   return c;
 }
 function buildModernTheme() {
-  THEME_M.big = []; THEME_M.small = [];
-  for (const ch of BLOCKCHARS) { THEME_M.big.push(neonSprite(ch, 16)); THEME_M.small.push(neonSprite(ch, SMALL)); }
+  THEME_M.big = []; THEME_M.small = []; THEME_M.small8 = [];
+  for (const ch of BLOCKCHARS) { THEME_M.big.push(neonSprite(ch, 16)); THEME_M.small.push(neonSprite(ch, SMALL)); THEME_M.small8.push(neonSprite(ch, 8)); }
+  THEME_M.sbg8 = neonBackground(96, 176, 8);
   THEME_M.bg = neonBackground(192, 352, 16);
   THEME_M.sbg = neonBackground(W * SMALL, H * SMALL, SMALL);
   G.dirty = true;
@@ -1678,15 +1783,63 @@ loadOriginalTheme();
    ========================================================================== */
 const stage = document.getElementById('stage');
 const cx = stage.getContext('2d');
-// Layout (logical units): big field on the left, then a 3 x 2 grid of 120 x 238 cells.
-// Cell (0,0) holds next piece / lines / level; the other five hold the opponents, drawn
-// 25% larger than the original (10 px cells instead of 8).
-const LW = 567, LH = 482;
-const CELLX = [200, 323, 446], CELLY = [1, 243], CW = W * SMALL, CH = H * SMALL;
+/* ---------- layouts (logical units) ----------
+   The big field (192 x 352, 16px cells) is always on the left. Next to it is a grid of cells:
+   one "info" cell (next piece, lines, level) and one cell per opponent.
+   - desktop:          3 x 2 grid, opponents at 10px cells (25% larger than the original)
+   - mobile portrait:  1 x 2, 2 x 2 or 2 x 3 grid (by number of opponents), original 8px cells
+   - mobile landscape: 3 x 2 grid, original 8px cells                                        */
 let SC = 2;
-const cellSlot = (c, r) => ({ x: CELLX[c], y: CELLY[r] + 19, px: CELLX[c], py: CELLY[r] + 1, bx: CELLX[c] - 1, by: CELLY[r] });
-const SLOTS = [null, { x: 1, y: 20, big: true, px: 1, py: 2, pw: 192 },
-  cellSlot(1, 0), cellSlot(2, 0), cellSlot(0, 1), cellSlot(1, 1), cellSlot(2, 1)];
+const MOBILE = { on: false, play: false, land: false };
+const LAYOUT_D = (() => {
+  const cellX = [200, 323, 446], cellY = [1, 243], cell = (c, r) => ({ x: cellX[c], y: cellY[r] });
+  return { name: 'desktop', mobile: false, LW: 567, LH: 482, s: 10, cw: W * 10, ch: H * 10, capH: 18,
+    info: cell(0, 0), opp: [cell(1, 0), cell(2, 0), cell(0, 1), cell(1, 1), cell(2, 1)],
+    inv: { x: 1, y: 378 }, spName: { x: 3, y: 418 }, spKind: { x: 3, y: 436 }, log: null };
+})();
+function mobileLayout(landscape, nOpp) {
+  const s = 8, cw = W * s, ch = H * s, capH = 16, gap = 4, cellH = capH + ch + 2, X0 = 198;
+  const base = { mobile: true, s, cw, ch, capH, inv: { x: 1, y: 378 } };
+  if (landscape) {
+    const cellX = [X0, X0 + cw + gap, X0 + 2 * (cw + gap)], cellY = [1, 1 + cellH + gap], cell = (c, r) => ({ x: cellX[c], y: cellY[r] });
+    return Object.assign(base, { name: 'land', LW: cellX[2] + cw + 2, LH: Math.max(412, cellY[1] + cellH + 1),
+      info: cell(0, 0), opp: [cell(1, 0), cell(2, 0), cell(0, 1), cell(1, 1), cell(2, 1)], spName: null, spKind: null, log: null });
+  }
+  if (nOpp <= 1) {                                 // one-on-one: single column, so your field can be bigger
+    const cell = r => ({ x: X0, y: 1 + r * (cellH + gap) });
+    return Object.assign(base, { name: 'port1', LW: X0 + cw + 2, LH: 448, info: cell(0), opp: [cell(1)],
+      spName: { x: 3, y: 416 }, spKind: { x: 3, y: 432 }, log: null });
+  }
+  const rows = nOpp <= 3 ? 2 : 3;
+  const cellX = [X0, X0 + cw + gap], cellY = [1, 1 + cellH + gap, 1 + 2 * (cellH + gap)], cell = (c, r) => ({ x: cellX[c], y: cellY[r] });
+  const opp = [cell(1, 0), cell(0, 1), cell(1, 1)];
+  if (rows === 3) opp.push(cell(0, 2), cell(1, 2));
+  const LH = Math.max(448, cellY[rows - 1] + cellH + 1);
+  return Object.assign(base, { name: 'port' + rows, LW: cellX[1] + cw + 2, LH, info: cell(0, 0), opp,
+    spName: { x: 3, y: 416 }, spKind: { x: 3, y: 432 }, log: LH - 450 >= 60 ? { x: 0, y: 450, w: 194, h: LH - 451 } : null });
+}
+// other players shown on a mobile layout: everyone in use, in player-number order
+function oppNums() {
+  const out = [];
+  for (let n = 1; n <= 6; n++) {
+    if (n === G.me) continue;
+    const p = G.players[n];
+    if ((p && p.present) || (NET.online && NET.names[n])) out.push(n);
+  }
+  if (!out.length && !NET.online && !G.running) S.bots.forEach((b, i) => { if (b.on) out.push(i + 2); });
+  return out;
+}
+function computeLayout() {
+  if (!MOBILE.on) return LAYOUT_D;
+  return mobileLayout(window.innerWidth > window.innerHeight, oppNums().length);
+}
+let CUR = LAYOUT_D;
+// which player number is drawn in opponent cell k
+function oppCellNums(L) {
+  if (!L.mobile) return [2, 3, 4, 5, 6].map(slotToNum);
+  const list = oppNums();
+  return L.opp.map((_, k) => list[k] || 0);
+}
 const PAL_L = { face: '#c0c0c0', hi: '#ffffff', lo: '#808080', text: '#000000', value: '#000000', panel: '#c0c0c0', panelText: '#000000',
   box: '#ffffff', boxText: '#000000', bad: '#b00000', good: '#006000', name: '#000080', msg: '#000000', msgText: '#ffffff', inv: '#c0c0c0', sel: '#ff0000',
   font: 'Tahoma, Verdana, Arial, sans-serif', valFont: 'bold 12px Arial, sans-serif', boxFont: 'Arial, sans-serif', upper: false };
@@ -1705,7 +1858,7 @@ function bevelLowered(x, y, w, h) {
   cx.fillStyle = P.lo; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
   cx.fillStyle = P.hi; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
 }
-function panelRaised(x, y, w, h, caption, color, accent) {
+function panelRaised(x, y, w, h, caption, color, accent, font) {
   cx.fillStyle = color || P.panel; cx.fillRect(x, y, w, h);
   if (P.upper) { cx.fillStyle = accent || 'rgba(0,229,255,0.7)'; cx.fillRect(x, y + h - 1, w, 1); }
   else {
@@ -1714,21 +1867,22 @@ function panelRaised(x, y, w, h, caption, color, accent) {
   }
   cx.save();
   cx.beginPath(); cx.rect(x + 2, y, w - 4, h); cx.clip();
-  cx.fillStyle = accent && P.upper ? accent : P.panelText; cx.font = P.upper ? '600 12px ' + P.font : UIFONT; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  cx.fillStyle = accent && P.upper ? accent : P.panelText; cx.font = font || (P.upper ? '600 12px ' + P.font : UIFONT); cx.textAlign = 'center'; cx.textBaseline = 'middle';
   cx.fillText(P.upper ? caption.toUpperCase() : caption, x + w / 2, y + h / 2 + 0.5);
   cx.restore();
 }
 function slotFor(num) { return num < G.me ? num + 1 : (num === G.me ? 1 : num); }
 function slotToNum(slot) { for (let n = 1; n <= 6; n++) if (slotFor(n) === slot) return n; return 0; }
-function drawField(p, slot) {
-  const T = TH(), sl = SLOTS[slot], s = sl.big ? 16 : SMALL, bg = sl.big ? T.bg : T.sbg, spr = sl.big ? T.big : T.small;
-  cx.drawImage(bg, sl.x, sl.y);
+function drawField(p, x, y, big, L) {
+  const T = TH(), s = big ? 16 : L.s;
+  const bg = big ? T.bg : (s === 8 ? T.sbg8 : T.sbg), spr = big ? T.big : (s === 8 ? T.small8 : T.small);
+  cx.drawImage(bg, x, y);
   if (!p) return;
   let f = p.field;
-  if (sl.big && p.cur && !p.dead) { f = f.slice(); place(f, p.cur, p.x, p.y); }
+  if (big && p.cur && !p.dead) { f = f.slice(); place(f, p.cur, p.x, p.y); }
   for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
     const ch = f[r * W + c];
-    if (ch !== '0') { const k = BLOCKCHARS.indexOf(ch); if (k >= 0) cx.drawImage(spr[k], sl.x + c * s, sl.y + r * s); }
+    if (ch !== '0') { const k = BLOCKCHARS.indexOf(ch); if (k >= 0) cx.drawImage(spr[k], x + c * s, y + r * s); }
   }
 }
 function wrapText(text, maxW) {
@@ -1742,89 +1896,126 @@ function wrapText(text, maxW) {
   return out;
 }
 function nameOf(p) { return p ? p.name : '?'; }
+function playerCaption(p, num) {
+  let cap = 'Not Playing';
+  if (NET.online && (!p || !p.present) && num && NET.names[num]) cap = num + '. ' + NET.names[num] + (G.running ? ' (next game)' : '');
+  if (p && p.present) {
+    cap = p.num + '. ' + p.name;
+    if (G.winner && (G.winner === p.num || sameTeam(G.players[G.winner], p))) cap += ' WON!';
+  }
+  return cap;
+}
 function render() {
+  const L = CUR;
   cx.setTransform(SC, 0, 0, SC, 0, 0);
   cx.imageSmoothingEnabled = false;
   P = isModern() ? PAL_M : PAL_L;
   UIFONT = P.upper ? '600 11px ' + P.font : '11px Tahoma, Verdana, Arial, sans-serif';
   const T = TH();
   const label = t => P.upper ? t.toUpperCase() : t;
-  cx.fillStyle = P.face; cx.fillRect(0, 0, LW, LH);
-
-  // frames
-  bevelLowered(0, 1, 194, 372);
-  for (let c = 0; c < 3; c++) for (let r = 0; r < 2; r++) bevelLowered(CELLX[c] - 1, CELLY[r], CW + 2, CH + 20);
-
-  // player fields
-  const bySlot = [null, null, null, null, null, null, null];
-  for (let n = 1; n <= 6; n++) bySlot[slotFor(n)] = G.players[n];
-  for (let slot = 1; slot <= 6; slot++) {
-    const p = bySlot[slot], sl = SLOTS[slot];
-    let cap = 'Not Playing';
-    if (NET.online && (!p || !p.present) && NET.names[slotToNum(slot)]) cap = slotToNum(slot) + '. ' + NET.names[slotToNum(slot)] + (G.running ? ' (next game)' : '');
-    if (p && p.present) {
-      cap = p.num + '. ' + p.name;
-      if (G.winner && (G.winner === p.num || sameTeam(G.players[G.winner], p))) cap += ' WON!';
-    }
-    const accent = P.upper && p && p.present ? (p.dead ? '#ff4d6d' : (G.winner && cap.endsWith('WON!') ? '#39ff88' : null)) : null;
-    panelRaised(sl.px, sl.py, sl.big ? 192 : CW, 18, cap, null, accent);
-    drawField(p && p.present ? p : null, slot);
-    if (p && p.present && p.team && !sl.big) {
-      cx.font = '10px Tahoma, Arial, sans-serif'; cx.textAlign = 'left'; cx.textBaseline = 'top';
-      cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillRect(sl.x, sl.y, Math.min(CW, cx.measureText(p.team).width + 6), 12);
-      cx.fillStyle = P.upper ? '#ffe600' : '#ffff80'; cx.fillText(p.team, sl.x + 3, sl.y + 1);
-    }
-  }
+  const capFont = L.mobile ? (P.upper ? '600 11px ' + P.font : '10px Tahoma, Arial, sans-serif') : null;
+  cx.fillStyle = P.face; cx.fillRect(0, 0, L.LW, L.LH);
   const me = ME();
 
-  // info cell: next piece, lines, level
-  const ix = CELLX[0], iy = CELLY[0];
-  cx.fillStyle = P.upper ? '#040a16' : P.face; cx.fillRect(ix, iy + 1, CW, CH + 18);
+  // big field (you)
+  bevelLowered(0, 1, 194, 372);
+  {
+    const p = me && me.present ? me : null;
+    const cap = playerCaption(p, G.me);
+    const accent = P.upper && p ? (p.dead ? '#ff4d6d' : (G.winner && cap.endsWith('WON!') ? '#39ff88' : null)) : null;
+    panelRaised(1, 2, 192, 18, cap, null, accent);
+    drawField(p, 1, 20, true, L);
+  }
+
+  // opponents
+  const nums = oppCellNums(L);
+  L.opp.forEach((c, k) => {
+    const num = nums[k], p = num ? G.players[num] : null, live = p && p.present ? p : null;
+    bevelLowered(c.x - 1, c.y, L.cw + 2, L.capH + L.ch + 2);
+    const cap = playerCaption(live, num);
+    const accent = P.upper && live ? (live.dead ? '#ff4d6d' : (G.winner && cap.endsWith('WON!') ? '#39ff88' : null)) : null;
+    panelRaised(c.x, c.y + 1, L.cw, L.capH, cap, null, accent, capFont);
+    const fy = c.y + 1 + L.capH;
+    drawField(live, c.x, fy, false, L);
+    if (live && live.team) {
+      cx.font = '10px Tahoma, Arial, sans-serif'; cx.textAlign = 'left'; cx.textBaseline = 'top';
+      cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillRect(c.x, fy, Math.min(L.cw, cx.measureText(live.team).width + 6), 12);
+      cx.fillStyle = P.upper ? '#ffe600' : '#ffff80'; cx.fillText(live.team, c.x + 3, fy + 1);
+    }
+  });
+
+  // info cell: next piece and stats
+  const I = L.info, iw = L.cw, ih = L.capH + L.ch + 2;
+  bevelLowered(I.x - 1, I.y, iw + 2, ih);
+  cx.fillStyle = P.upper ? '#040a16' : P.face; cx.fillRect(I.x, I.y + 1, iw, ih - 2);
   cx.fillStyle = P.text; cx.font = UIFONT; cx.textAlign = 'left'; cx.textBaseline = 'top';
-  cx.fillText(label('Next Piece:'), ix + 6, iy + 6);
-  bevelLowered(ix + 22, iy + 22, 76, 76);
-  cx.fillStyle = P.upper ? '#02050c' : '#000'; cx.fillRect(ix + 23, iy + 23, 74, 74);
+  cx.fillText(label(L.mobile ? 'Next:' : 'Next Piece:'), I.x + 6, I.y + 5);
+  const bx = I.x + Math.round((iw - 76) / 2), by = I.y + (L.mobile ? 19 : 22);
+  bevelLowered(bx, by, 76, 76);
+  cx.fillStyle = P.upper ? '#02050c' : '#000'; cx.fillRect(bx + 1, by + 1, 74, 74);
   if (me.next) {
     const s = me.next, w = pw(s), h = ph(s);
-    const ox = ix + 23 + Math.round((74 - w * 16) / 2), oy = iy + 23 + Math.round((74 - h * 16) / 2);
+    const ox = bx + 1 + Math.round((74 - w * 16) / 2), oy = by + 1 + Math.round((74 - h * 16) / 2);
     for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) {
       const ch = s.charAt(4 + r * w + c);
       if (ch !== '0') cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], ox + c * 16, oy + r * 16);
     }
   }
-  const stat = (lab, val, y, small) => {
+  let sy = by + 76 + (L.mobile ? 10 : 14);
+  const step = L.mobile ? 19 : 24;
+  const stat = (lab, val, small) => {
     cx.textAlign = 'left'; cx.fillStyle = P.text; cx.font = small && P.upper ? '600 10px ' + P.font : UIFONT;
-    cx.fillText(label(lab), ix + 6, y + 1);
-    cx.textAlign = 'right'; cx.fillStyle = P.value; cx.font = P.valFont;
+    cx.fillText(label(lab), I.x + 6, sy + 1);
+    cx.textAlign = 'right'; cx.fillStyle = P.value; cx.font = L.mobile ? (P.upper ? 'bold 12px Orbitron, Arial, sans-serif' : 'bold 12px Arial, sans-serif') : P.valFont;
     if (P.upper) { cx.shadowColor = 'rgba(0,229,255,0.8)'; cx.shadowBlur = 6; }
-    cx.fillText(String(val), ix + CW - 6, y);
+    cx.fillText(String(val), I.x + iw - 6, sy);
     cx.shadowBlur = 0;
+    sy += step;
   };
-  stat('Lines:', me.present ? me.lines : 0, iy + 112);
-  stat('Level:', me.present ? me.level : 1, iy + 136);
-  if (R.averaged && G.players.some(p => p && p.present)) stat('Active Level:', G.avgLevel, iy + 160, true);
-  if (me.present && G.running) {
-    stat('Specials:', me.inv.length + '/' + R.capacity, iy + 184, true);
-  }
+  stat('Lines:', me.present ? me.lines : 0);
+  stat('Level:', me.present ? me.level : 1);
+  if (R.averaged && G.players.some(p => p && p.present)) stat(L.mobile ? 'Avg Level:' : 'Active Level:', G.avgLevel, true);
+  if (me.present && G.running) stat('Specials:', me.inv.length + '/' + R.capacity, true);
 
   // inventory: 18 slots in two rows of 12 + 6 under the big field
-  bevelLowered(0, 376, 194, 36);
-  cx.fillStyle = P.inv; cx.fillRect(1, 377, 192, 34);
+  bevelLowered(0, L.inv.y - 2, 194, 36);
+  cx.fillStyle = P.inv; cx.fillRect(1, L.inv.y - 1, 192, 34);
   for (let i = 0; i < 18; i++) {
     const ch = me.inv.charAt(i);
-    const x = 1 + (i % 12) * 16, y = 378 + Math.floor(i / 12) * 16;
-    if (ch) cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], x, y);
+    if (ch) cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], L.inv.x + (i % 12) * 16, L.inv.y + Math.floor(i / 12) * 16);
   }
   if (P.upper) { cx.save(); cx.shadowColor = P.sel; cx.shadowBlur = 8; }
-  cx.strokeStyle = P.sel; cx.lineWidth = 2; cx.strokeRect(1, 378, 16, 16);
+  cx.strokeStyle = P.sel; cx.lineWidth = 2; cx.strokeRect(L.inv.x, L.inv.y, 16, 16);
   if (P.upper) cx.restore();
-  const first = me.inv ? SNAME[me.inv[0]] : (G.running && me.present && !me.dead ? 'No Special Blocks' : '');
-  cx.font = P.upper ? '700 13px ' + P.font : 'bold 12px Arial, sans-serif'; cx.textAlign = 'left'; cx.textBaseline = 'top';
-  cx.fillStyle = me.inv ? (P.upper ? KIND_COLOR[SP_KIND[me.inv[0]]] : (SP_KIND[me.inv[0]] === 'defense' ? '#006000' : SP_KIND[me.inv[0]] === 'attack' ? '#b00000' : '#6a4a00')) : P.text;
-  cx.fillText(P.upper ? first.toUpperCase() : first, 3, 418);
-  if (me.inv) {
-    cx.font = UIFONT; cx.fillStyle = P.text;
-    cx.fillText(label(KIND_LABEL[SP_KIND[me.inv[0]]]), 3, 436);
+  if (L.spName) {
+    const first = me.inv ? SNAME[me.inv[0]] : (G.running && me.present && !me.dead ? 'No Special Blocks' : '');
+    cx.font = P.upper ? '700 13px ' + P.font : 'bold 12px Arial, sans-serif'; cx.textAlign = 'left'; cx.textBaseline = 'top';
+    cx.fillStyle = me.inv ? (P.upper ? KIND_COLOR[SP_KIND[me.inv[0]]] : (SP_KIND[me.inv[0]] === 'defense' ? '#006000' : SP_KIND[me.inv[0]] === 'attack' ? '#b00000' : '#6a4a00')) : P.text;
+    cx.fillText(P.upper ? first.toUpperCase() : first, L.spName.x, L.spName.y);
+    if (me.inv && L.spKind) { cx.font = UIFONT; cx.fillStyle = P.text; cx.fillText(label(KIND_LABEL[SP_KIND[me.inv[0]]]), L.spKind.x, L.spKind.y); }
+  }
+
+  // mini attack log (tall phone layout)
+  if (L.log) {
+    const g = L.log;
+    bevelLowered(g.x, g.y, g.w, g.h);
+    cx.fillStyle = P.box; cx.fillRect(g.x + 1, g.y + 1, g.w - 2, g.h - 2);
+    cx.save(); cx.beginPath(); cx.rect(g.x + 2, g.y + 1, g.w - 4, g.h - 2); cx.clip();
+    const lh = 13, max = Math.floor((g.h - 4) / lh), list = G.attacks.slice(-max);
+    cx.textBaseline = 'top'; cx.textAlign = 'left';
+    list.forEach((a, i) => {
+      let x = g.x + 4;
+      const y = g.y + 3 + i * lh;
+      const segs = a.lines
+        ? [[nameOf(a.from) + ': ', P.name, 1], [a.lines + ' line' + (a.lines > 1 ? 's' : '') + ' to all', P.bad, 1]]
+        : [[nameOf(a.from) + ': ', P.name, 1], [SNAME[a.sp], ('cngs'.indexOf(a.sp) >= 0 && a.on === a.from) ? P.good : P.bad, 1], [' → ', P.boxText, 0], [nameOf(a.on), P.name, 1]];
+      for (const [t, col, bold] of segs) {
+        cx.font = (bold ? 'bold ' : '') + '10px ' + P.boxFont; cx.fillStyle = col;
+        cx.fillText(t, x, y); x += cx.measureText(t).width;
+        if (x > g.x + g.w) break;
+      }
+    });
+    cx.restore();
   }
 
   // overlays on the big field
@@ -1834,10 +2025,10 @@ function render() {
     cx.fillText('PAUSED', 97, 190);
   }
   if (!G.running && !G.players.some(p => p && p.present)) {
-    cx.fillStyle = P.upper ? '#00e5ff' : '#c8d0ff'; cx.font = 'bold 13px Arial, sans-serif'; cx.textAlign = 'center';
+    cx.fillStyle = P.upper ? '#00e5ff' : '#c8d0ff'; cx.font = 'bold 13px Arial, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'top';
     cx.fillText('Press Start New Game', 97, 180);
     cx.font = '11px Arial, sans-serif'; cx.fillStyle = P.upper ? '#7fdfff' : '#8fa0e0';
-    cx.fillText('then click here and play', 97, 198);
+    cx.fillText(MOBILE.on ? 'then use the buttons below' : 'then click here and play', 97, 198);
   }
 }
 
@@ -1867,31 +2058,44 @@ function renderSide() {
 
 /* ---------- fit the playing fields to the browser window ---------- */
 function fitStage() {
-  const wrap = $('stageWrap');
-  const availW = Math.max(240, wrap.clientWidth);
-  const top = wrap.getBoundingClientRect().top;
-  const sectionTop = wrap.closest('section').getBoundingClientRect().top;
-  // tall enough to keep the whole fields window on screen; phones fall back to full width
-  const below = ($('legendKeys').offsetHeight || 0) + ($('touch').offsetHeight || 0) + 30;
-  const availH = Math.max(320, window.innerHeight - (top - sectionTop) - below);
-  let w = Math.min(availW, availH * LW / LH);
-  if (window.innerWidth < 700) w = availW;
-  w = Math.floor(w);
-  const h = Math.floor(w * LH / LW);
+  const L = computeLayout();
+  CUR = L;
+  const wrap = document.getElementById('stageWrap');
+  const availW = Math.max(200, wrap.clientWidth);
+  let w;
+  if (MOBILE.play) {
+    // full-screen play: as large as the space between the top bar and the controls allows
+    const availH = Math.max(160, wrap.clientHeight);
+    w = Math.min(availW, availH * L.LW / L.LH);
+  } else if (MOBILE.on) {
+    w = availW;
+  } else {
+    const top = wrap.getBoundingClientRect().top;
+    const sectionTop = wrap.closest('section').getBoundingClientRect().top;
+    const below = (document.getElementById('legendKeys').offsetHeight || 0) + 30;
+    const availH = Math.max(320, window.innerHeight - (top - sectionTop) - below);
+    w = Math.min(availW, availH * L.LW / L.LH);
+    if (window.innerWidth < 700) w = availW;
+  }
+  w = Math.max(100, Math.floor(w));
+  const h = Math.floor(w * L.LH / L.LW);
   const dpr = Math.min(3, window.devicePixelRatio || 1);
   const bw = Math.round(w * dpr), bh = Math.round(h * dpr);
   if (stage.width !== bw || stage.height !== bh) { stage.width = bw; stage.height = bh; }
   stage.style.width = w + 'px'; stage.style.height = h + 'px';
-  SC = bw / LW;
+  SC = bw / L.LW;
   G.dirty = true;
 }
-window.addEventListener('resize', fitStage);
+window.addEventListener('resize', () => { updateMobileMode(); fitStage(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { updateMobileMode(); fitStage(); }, 150));
 if (window.ResizeObserver) new ResizeObserver(() => fitStage()).observe(document.getElementById('stageWrap'));
 function frame() {
   if (G.dirty || G.running) { render(); G.dirty = false; }
   statusTick();
   updateSpInfo();
   renderSide();
+  if (computeLayout().name !== CUR.name) fitStage();
+  updateMobileBar();
   requestAnimationFrame(frame);
 }
 
@@ -1904,8 +2108,8 @@ const normKey = k => (k && k.length === 1 ? k.toLowerCase() : k);
 function inTextField(e) { const t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA'); }
 let fieldsActive = false;
 stage.addEventListener('focus', () => { fieldsActive = true; });
-stage.addEventListener('pointerdown', () => { stage.focus(); ensureAudio(); });
-document.addEventListener('pointerdown', e => { ensureAudio(); if (e.target !== stage && !e.target.closest('#touch')) fieldsActive = false; });
+stage.addEventListener('pointerdown', () => { if (!MOBILE.on) stage.focus(); ensureAudio(); });
+document.addEventListener('pointerdown', e => { ensureAudio(); if (e.target !== stage && !e.target.closest('#fieldsWin .mctl-l, #fieldsWin .mctl-r, #fieldsWin .mctl-sp')) fieldsActive = false; });
 window.addEventListener('keydown', e => {
   if (inTextField(e)) return;
   if (!fieldsActive && document.activeElement !== stage) return;
@@ -1930,30 +2134,158 @@ window.addEventListener('keyup', e => {
 });
 window.addEventListener('blur', () => softDropUp(ME()));
 
-// touch controls
-const repeatable = { left: 1, right: 1 };
-let touchRepeat = null;
-document.getElementById('touch').addEventListener('pointerdown', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  e.preventDefault(); ensureAudio(); fieldsActive = true;
-  const me = ME(), k = b.dataset.k;
-  const act = () => {
-    if (k === 'left') moveLeft(me); else if (k === 'right') moveRight(me);
-    else if (k === 'rotr') rotatePiece(me, 2); else if (k === 'rotl') rotatePiece(me, 4);
-    else if (k === 'soft') softDropDown(me); else if (k === 'drop') hardDrop(me);
-    else if (k === 'disc') discard(me); else if (k[0] === 't') useSpecial(me, parseInt(k.slice(1), 10));
-  };
-  act();
-  if (repeatable[k]) { clearInterval(touchRepeat); const t0 = setTimeout(() => { touchRepeat = setInterval(act, 60); }, 220); touchRepeat = t0; }
+// ---------- touch controls (phone / tablet play mode) ----------
+const gid = id => document.getElementById(id);
+function detectTouchUI() {
+  if (S.ui === 'mobile') return true;
+  if (S.ui === 'desktop') return false;
+  const mq = q => !!(window.matchMedia && window.matchMedia(q).matches);
+  return mq('(pointer: coarse)') && !mq('(any-pointer: fine)');
+}
+function updateMobileMode() {
+  const on = detectTouchUI(), land = window.innerWidth > window.innerHeight;
+  MOBILE.land = land;
+  document.body.classList.toggle('landscape', land);
+  if (on !== MOBILE.on) {
+    MOBILE.on = on;
+    document.body.classList.toggle('mobile-ui', on);
+    if (!on) exitPlay(true);
+    else if (G.running) enterPlay();
+  }
+  updateResume();
+}
+function enterPlay() {
+  if (!MOBILE.on) return;
+  MOBILE.play = true;
+  document.body.classList.add('playmode');
+  closeHelp && closeHelp();
+  gid('mSheet').hidden = true;
+  updateResume();
+  requestAnimationFrame(() => { fitStage(); requestAnimationFrame(fitStage); });
+}
+function exitPlay(silent) {
+  MOBILE.play = false;
+  document.body.classList.remove('playmode');
+  for (const p of G.players) if (p) softDropUp(p);
+  releaseAllTouches();
+  updateResume();
+  requestAnimationFrame(fitStage);
+}
+function updateResume() { gid('mResume').hidden = !(MOBILE.on && !MOBILE.play && G.running); }
+gid('mResume').addEventListener('click', enterPlay);
+gid('mExit').addEventListener('click', () => exitPlay());
+gid('mNew').addEventListener('click', () => startGame());
+gid('mPause').addEventListener('click', () => togglePause());
+
+function touchAct(k) {
+  const me = ME();
+  switch (k) {
+    case 'left': moveLeft(me); break;
+    case 'right': moveRight(me); break;
+    case 'rotl': rotatePiece(me, 4); break;
+    case 'rotr': rotatePiece(me, 2); break;
+    case 'drop': hardDrop(me); break;
+    case 'disc': discard(me); break;
+  }
+}
+const REPEAT_KEYS = { left: 1, right: 1 };
+const activeTouches = new Map();       // pointerId -> { btn, k, t, i }
+function releaseTouch(id) {
+  const a = activeTouches.get(id);
+  if (!a) return;
+  clearTimeout(a.t); clearInterval(a.i);
+  a.btn.classList.remove('on');
+  if (a.k === 'soft') softDropUp(ME());
+  activeTouches.delete(id);
+}
+function releaseAllTouches() { for (const id of Array.from(activeTouches.keys())) releaseTouch(id); }
+function bindPad(el) {
+  el.addEventListener('pointerdown', e => {
+    const b = e.target.closest('button[data-k]');
+    if (!b) return;
+    e.preventDefault();
+    ensureAudio();
+    const k = b.dataset.k;
+    releaseTouch(e.pointerId);
+    try { b.setPointerCapture(e.pointerId); } catch (err) {}
+    b.classList.add('on');
+    const a = { btn: b, k, t: 0, i: 0 };
+    activeTouches.set(e.pointerId, a);
+    if (k === 'soft') softDropDown(ME());
+    else touchAct(k);
+    // hold to repeat sideways moves, like holding an arrow key
+    if (REPEAT_KEYS[k]) a.t = setTimeout(() => { a.i = setInterval(() => touchAct(k), 55); }, 170);
+  });
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) el.addEventListener(ev, e => releaseTouch(e.pointerId));
+  // stop iOS double-tap zoom, text selection and scrolling on the pads
+  el.addEventListener('touchstart', e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+  el.addEventListener('contextmenu', e => e.preventDefault());
+}
+['mctlL', 'mctlR', 'mctlSp'].forEach(id => bindPad(gid(id)));
+gid('fieldsWin').addEventListener('touchmove', e => { if (MOBILE.play && e.cancelable) e.preventDefault(); }, { passive: false });
+stage.addEventListener('touchstart', e => { if (MOBILE.play && e.cancelable) e.preventDefault(); }, { passive: false });
+
+// target buttons: one per player in the game; tapping sends your first special block to them
+let targetsKey = '';
+function updateTargets() {
+  const me = ME();
+  const sp = G.running && me.present && !me.dead && me.inv ? me.inv[0] : '';
+  const list = [];
+  for (let n = 1; n <= 6; n++) { const p = G.players[n]; if (p && p.present) list.push(p); }
+  const key = [sp, S.mode, list.map(p => p.num + p.name + (p.dead ? 'x' : '') + p.team).join('|'), G.me].join('#');
+  if (key === targetsKey) return;
+  targetsKey = key;
+  const kind = sp ? SP_KIND[sp] : '';
+  gid('mTargets').innerHTML = list.map(p => {
+    const self = p.num === G.me;
+    const ok = sp && !p.dead && (self ? sp !== 's' : true);
+    const good = self ? kind !== 'attack' : kind !== 'defense';
+    const cls = ok ? (good ? (self ? 'def' : 'atk') : '') : '';
+    return '<button type="button" data-t="' + p.num + '" class="' + cls + '"' + (ok ? '' : ' disabled') + '>' + p.num + '<small>' + (self ? 'Me' : esc(p.name)) + '</small></button>';
+  }).join('') || '<span class="note" style="align-self:center">No players</span>';
+  const ic = gid('mSpIcon');
+  if (sp) drawSprite(ic, sp, 2); else ic.getContext('2d').clearRect(0, 0, 32, 32);
+  gid('mSp').disabled = false;
+  const d = document.querySelector('#mctlSp .mdisc'); d.disabled = !sp;
+}
+gid('mTargets').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button[data-t]');
+  if (!b || b.disabled) return;
+  e.preventDefault();
+  useSpecial(ME(), parseInt(b.dataset.t, 10));
 });
-const stopTouch = e => {
-  clearInterval(touchRepeat); clearTimeout(touchRepeat); touchRepeat = null;
-  const b = e.target && e.target.closest && e.target.closest('button');
-  if (b && b.dataset.k === 'soft') softDropUp(ME());
-};
-document.getElementById('touch').addEventListener('pointerup', stopTouch);
-document.getElementById('touch').addEventListener('pointercancel', stopTouch);
-document.getElementById('touch').addEventListener('pointerleave', stopTouch);
+// tap an opponent's field on the canvas to send them your special block
+stage.addEventListener('pointerdown', e => {
+  if (!MOBILE.on || !G.running) return;
+  const me = ME();
+  if (!me.present || me.dead || !me.inv) return;
+  const r = stage.getBoundingClientRect(), L = CUR;
+  const x = (e.clientX - r.left) / r.width * L.LW, y = (e.clientY - r.top) / r.height * L.LH;
+  const nums = oppCellNums(L);
+  L.opp.forEach((c, k) => {
+    if (nums[k] && x >= c.x && x < c.x + L.cw && y >= c.y && y < c.y + L.capH + L.ch + 2) useSpecial(me, nums[k]);
+  });
+});
+// special block explanation sheet
+function fillSheet() {
+  gid('mSheetBody').innerHTML = '<div class="sp-title">' + gid('spTitle').innerHTML + '</div><div class="sp-desc">' + esc(gid('spDesc').textContent) + '</div>' +
+    (gid('spCtx').hidden ? '' : '<div class="sp-ctx">' + gid('spCtx').innerHTML + '</div>') +
+    '<div class="sp-how">Tap a player’s button (or their field) to send it. D discards it.</div>';
+}
+// pointerup, because the pad cancels touchstart (which also cancels click on phones)
+gid('mSp').addEventListener('pointerup', e => { e.preventDefault(); const sh = gid('mSheet'); if (sh.hidden) { fillSheet(); sh.hidden = false; } else sh.hidden = true; });
+gid('mSheetClose').addEventListener('click', () => { gid('mSheet').hidden = true; });
+function updateMobileBar() {
+  if (!MOBILE.on) return;
+  const mod = !NET.online || NET.mod === NET.slot;
+  gid('mStatus').textContent = gid('status').textContent;
+  gid('mNew').hidden = G.running || !mod;
+  gid('mPause').hidden = !G.running || !mod;
+  gid('mPause').textContent = G.paused ? 'Resume' : 'Pause';
+  if (!gid('mSheet').hidden) fillSheet();
+  updateTargets();
+  updateResume();
+}
 
 // chat ('T')
 const chat = document.getElementById('chat');
@@ -2028,7 +2360,7 @@ function writeForm() {
   for (let i = 0; i < 9; i++) $('sp' + i).value = S.specials[i];
   for (let i = 0; i < 7; i++) $('pc' + i).value = S.pieces[i];
   for (let i = 0; i < 6; i++) $('k' + (i + 1)).value = keyLabel(S.keys[i]);
-  $('s_sound').checked = S.sound; $('s_music').checked = S.music;
+  $('s_sound').checked = S.sound; $('s_music').checked = S.music; $('s_ui').value = S.ui || 'auto';
   syncMe(); updateTotals(); renderKeyLegend();
 }
 const clampInt = (v, lo, hi, d) => { v = parseInt(v, 10); if (isNaN(v)) v = d; return Math.max(lo, Math.min(hi, v)); };
@@ -2049,6 +2381,7 @@ function readForm() {
   for (let i = 0; i < 9; i++) S.specials[i] = clampInt($('sp' + i).value, 0, 100, 0);
   for (let i = 0; i < 7; i++) S.pieces[i] = clampInt($('pc' + i).value, 0, 100, 0);
   S.sound = $('s_sound').checked;
+  const ui = $('s_ui').value; if (ui !== S.ui) { S.ui = ui; setTimeout(() => { updateMobileMode(); fitStage(); }, 0); }
   const wantMusic = $('s_music').checked;
   if (wantMusic !== S.music) { S.music = wantMusic; if (wantMusic) { ensureAudio(); musicStart(); } else musicPause(); }
   saveSettings();
@@ -2279,6 +2612,7 @@ function netConnect() {
 }
 function leftRoom() {
   const wasIn = NET.online;
+  if (MOBILE.play) exitPlay();
   if (NET.online && G.running) { endGameSilent(); G.running = false; G.paused = false; }
   for (const p of G.players) if (p) { p.remote = false; if (NET.online) { p.present = false; p.field = zeros(N); } }
   NET.online = false; NET.slot = 0; NET.mod = 0; NET.names = {}; NET.teams = {}; NET.room = null;
@@ -2607,12 +2941,36 @@ $('btnCopyMini').addEventListener('click', async () => {
   else { const b = $('btnCopyMini'); b.textContent = 'Link Copied!'; setTimeout(() => { b.textContent = 'Copy Invite Link'; }, 2000); }
 });
 
+/* ---------- "?" help popovers ---------- */
+let helpFor = null;
+function closeHelp() { $('helpPop').hidden = true; helpFor = null; }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.help');
+  if (!b) { if (!e.target.closest('#helpPop')) closeHelp(); return; }
+  e.preventDefault(); e.stopPropagation();
+  if (helpFor === b) { closeHelp(); return; }
+  const pop = $('helpPop');
+  pop.textContent = b.dataset.help;
+  pop.hidden = false;
+  helpFor = b;
+  const r = b.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let x = Math.min(Math.max(12, r.left + r.width / 2 - pw / 2), window.innerWidth - pw - 12);
+  let y = r.bottom + 8;
+  if (y + ph > window.innerHeight - 8) y = Math.max(8, r.top - ph - 8);
+  pop.style.left = x + 'px'; pop.style.top = y + 'px';
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
+window.addEventListener('scroll', closeHelp, { passive: true });
+
 // boot
 buildForm();
 writeForm();
 renderWinlist();
-addMsg('TetriNET v1.13 — St0rmCat Productions, 1997. Browser port.');
+addMsg('TetriNET — a web port of the original game by St0rmCat.');
 updateButtons();
+updateMobileMode();
 fitStage();
 requestAnimationFrame(frame);
 </script>
+</body>
+</html>

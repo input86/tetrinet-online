@@ -1,12 +1,12 @@
 'use strict';
 /*
- * TetriNET v1.13 online server.
+ * TetriNET online server (web port).
  *
  * Serves the game page from ./public and hosts any number of game rooms
  * (up to 6 players each) over a WebSocket on the same address.
  * Rooms are public (listed on the landing page) or private (password needed).
  *
- * Like the original 1997 server, a room does not simulate anyone's field:
+ * Like the original TetriNET server, a room does not simulate anyone's field:
  * each client runs its own game and the room relays field updates ("f"),
  * special blocks ("sb"), levels ("lvl") and losses, decides the winner
  * and keeps the room's win list.

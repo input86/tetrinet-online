@@ -1,6 +1,7 @@
-# TetriNET v1.13 — online
+# TetriNET — online
 
-A browser port of St0rmCat's TetriNET v1.13 (1997) with a small game server.
+A new web port of TetriNET, the multiplayer game created by St0rmCat in 1997, with a small game server.
+The original game, its design and its name belong to its creator; this port is independent and not endorsed by St0rmCat.
 
 - Open the page, type a nickname and **Create Game**: choose **Public** (listed on the landing
   page for anyone to join) or **Private** (needs a password you choose).
@@ -9,13 +10,20 @@ A browser port of St0rmCat's TetriNET v1.13 (1997) with a small game server.
 - Up to 6 players per game. The first player in is the moderator (marked `*`): they set the
   rules and press **Start New Game**. If they leave, the next player takes over.
 - Empty games are removed after 2 minutes.
-- **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original 1997 look
+- **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original look
   with the original graphics. It's a per-player choice and doesn't change the game.
 - The side column shows the next special block (what it does, attack or defense, who it would
   hit best, which key uses it), the attacks/defenses log and the in-game messages (press **T** to talk).
 - Opponents' fields are drawn 25% larger than in the original, and the playing fields scale to
   fill the browser window.
 - The top window collapses automatically once you start or join a game; **Show** opens it again.
+- Settings that aren't self-explanatory have a **?** button that explains them.
+- **Phones and tablets:** when a game starts, the fields fill the screen with touch controls
+  (◀ ▼ ▶ to move, hold ▼ to drop faster, ⟲ ⟳ to rotate, DROP). The row above shows one button per player:
+  tap it (or tap that player's field) to send your next special block; D discards it; the icon
+  explains what it does. Works in portrait and landscape. **Menu** returns to the lobby and chat;
+  **Back to Game** returns to the game. Opponents are drawn at the original size there.
+  Misc. Settings → Controls can force touch or keyboard controls.
 
 ## Files
 

@@ -1,7 +1,7 @@
 {
   "name": "tetrinet-online",
   "version": "1.0.0",
-  "description": "TetriNET v1.13 browser port with a small online game server (one session, up to 6 players).",
+  "description": "TetriNET web port with a small online game server (game rooms, up to 6 players each).",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
