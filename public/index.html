@@ -1,4 +1,7 @@
 <title>TetriNET 1.13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&display=swap">
 <style>
   :root {
     color-scheme: light;
@@ -154,10 +157,94 @@
   .nicklist .nick span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nicklist button { min-height: 20px; padding: 0 6px; font-size: 11px; }
   details summary { cursor: pointer; }
+
+  /* ---------- display mode switch ---------- */
+  .modebar { display: flex; justify-content: flex-end; align-items: center; gap: 8px; color: #e8ffff; font-weight: bold; text-shadow: 1px 1px 0 rgba(0,0,0,.5); }
+  .seg { display: inline-flex; }
+  .seg button { min-height: 24px; padding: 2px 12px; }
+  .seg button[aria-pressed="true"] { font-weight: bold; border-color: var(--dk) var(--hi) var(--hi) var(--dk); box-shadow: inset 1px 1px 0 var(--lo); }
+
+  /* ---------- special block info box ---------- */
+  .spinfo { display: grid; grid-template-columns: 40px 1fr; gap: 4px 10px; align-items: start; margin: 6px 2px 2px; padding: 8px 10px; background: #ffffe1; border: 1px solid #000; font: 12px/1.4 Arial, sans-serif; min-height: 58px; }
+  .spinfo canvas { width: 32px; height: 32px; image-rendering: pixelated; margin-top: 2px; }
+  .sp-title { font-weight: bold; font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+  .sp-kind { font-size: 10px; letter-spacing: .06em; padding: 0 5px; border: 1px solid; }
+  .sp-kind.attack { color: #a00000; border-color: #a00000; }
+  .sp-kind.defense { color: #006400; border-color: #006400; }
+  .sp-kind.either { color: #6a4a00; border-color: #6a4a00; }
+  .sp-desc { margin-top: 2px; }
+  .sp-ctx { margin-top: 2px; color: #303030; }
+  .sp-how { margin-top: 4px; font-size: 11px; color: #404040; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .sp-queue { display: inline-flex; gap: 2px; }
+  .sp-queue canvas { width: 16px; height: 16px; margin: 0; }
+
+  /* ---------- MODERN (neon grid) ---------- */
+  body.modern {
+    --desk: #02040a; --desk-deep: #000000; --face: #070c18; --hi: #00e5ff; --lite: #0a3a4a; --lo: #0c2a38; --dk: #000;
+    --ink: #d6fbff; --title-a: #041824; --title-b: #041824; --title-ink: #00e5ff; --field: #040914; --warn: #ff4d6d; --ok: #39ff88;
+    color-scheme: dark;
+    font-family: Rajdhani, "Segoe UI", Tahoma, sans-serif; font-size: 14px; font-weight: 500;
+    background: #02040a;
+    background-image:
+      linear-gradient(rgba(0,229,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.07) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% -10%, rgba(0,229,255,.18), transparent 55%),
+      radial-gradient(ellipse at 50% 120%, rgba(255,61,242,.14), transparent 55%);
+    background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
+  }
+  body.modern .modebar { color: #7fdfff; text-shadow: 0 0 8px rgba(0,229,255,.6); font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  body.modern .win { background: rgba(6,11,22,.92); border: 1px solid #00e5ff; box-shadow: 0 0 0 1px rgba(0,229,255,.15), 0 0 18px rgba(0,229,255,.28), inset 0 0 24px rgba(0,229,255,.06); padding: 4px; border-radius: 3px; }
+  body.modern .titlebar { background: linear-gradient(90deg, rgba(0,229,255,.16), rgba(255,61,242,.10) 70%, transparent); border-bottom: 1px solid rgba(0,229,255,.5); font-family: Orbitron, Rajdhani, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #00e5ff; text-shadow: 0 0 8px rgba(0,229,255,.8); padding: 6px 8px; }
+  body.modern .titlebar .fake { display: none; }
+  body.modern .titlebar .ico { outline: none; filter: drop-shadow(0 0 4px rgba(0,229,255,.8)); }
+  body.modern button, body.modern .btn, body.modern .seg button { background: rgba(0,229,255,.06); color: #bdf6ff; border: 1px solid #00b8d4; box-shadow: none; border-radius: 2px; font-family: Rajdhani, sans-serif; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 13px; }
+  body.modern button:hover:not(:disabled) { background: rgba(0,229,255,.16); box-shadow: 0 0 10px rgba(0,229,255,.45); color: #fff; }
+  body.modern button:active:not(:disabled) { border-color: #00e5ff; box-shadow: inset 0 0 8px rgba(0,229,255,.5); }
+  body.modern button:disabled { color: #3c5866; border-color: #16303c; text-shadow: none; background: transparent; }
+  body.modern .seg button[aria-pressed="true"] { background: rgba(0,229,255,.22); color: #fff; box-shadow: 0 0 10px rgba(0,229,255,.5); border-color: #00e5ff; }
+  body.modern .tab { background: transparent; border: 1px solid #0c4a5a; border-bottom: none; color: #7fbccc; }
+  body.modern .tab[aria-selected="true"] { color: #00e5ff; border-color: #00e5ff; text-shadow: 0 0 6px rgba(0,229,255,.7); background: rgba(0,229,255,.08); }
+  body.modern .panel { border: 1px solid rgba(0,229,255,.35); box-shadow: none; border-radius: 2px; }
+  body.modern fieldset { border: 1px solid rgba(0,229,255,.25); border-radius: 2px; }
+  body.modern legend { color: #ff6ef5; font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,61,242,.6); }
+  body.modern input[type="text"], body.modern input[type="number"], body.modern input[type="password"], body.modern select, body.modern #chat {
+    background: #030812; color: #e6fdff; border: 1px solid #0f6a80; box-shadow: none; border-radius: 2px; font-family: Rajdhani, sans-serif; font-size: 14px; }
+  body.modern input:focus-visible, body.modern select:focus-visible { outline: none; border-color: #00e5ff; box-shadow: 0 0 8px rgba(0,229,255,.55); }
+  body.modern input[type="checkbox"], body.modern input[type="radio"] { accent-color: #00e5ff; }
+  body.modern .note { color: #8fb8c6; }
+  body.modern kbd { background: #06101e; color: #00e5ff; border: 1px solid #0f6a80; }
+  body.modern .status { background: #030812; border: 1px solid #0f6a80; color: #00e5ff; font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  body.modern .stage-wrap { background: transparent; }
+  body.modern canvas:focus-visible { outline: 1px solid #ff3df2; outline-offset: 2px; }
+  body.modern .pline, body.modern .nicklist, body.modern .roomlist, body.modern .winlist { background: #030812; border: 1px solid #0f4a5a; box-shadow: inset 0 0 12px rgba(0,229,255,.06); color: #cdefff; font-family: Rajdhani, sans-serif; font-size: 14px; }
+  body.modern .pline .sys { color: #00e5ff; }
+  body.modern .pline .act { color: #ff6ef5; }
+  body.modern .roomlist .room { border-bottom-color: #0c2a38; }
+  body.modern .roomlist .room .meta { color: #7fa6b4; }
+  body.modern .invite { background: rgba(255,61,242,.08); border: 1px solid #ff3df2; box-shadow: 0 0 12px rgba(255,61,242,.3); }
+  body.modern .badge.pub { background: rgba(57,255,136,.12); border-color: #39ff88; color: #39ff88; }
+  body.modern .badge.priv { background: rgba(255,77,109,.12); border-color: #ff4d6d; color: #ff8fa3; }
+  body.modern .pieceicon i.on { background: #00e5ff; box-shadow: 0 0 4px #00e5ff; }
+  body.modern .spinfo { background: #040a16; border: 1px solid #00e5ff; box-shadow: 0 0 14px rgba(0,229,255,.25), inset 0 0 18px rgba(0,229,255,.06); color: #d6fbff; font-family: Rajdhani, sans-serif; font-size: 14px; }
+  body.modern .sp-title { font-family: Orbitron, Rajdhani, sans-serif; font-size: 13px; letter-spacing: .06em; color: #fff; }
+  body.modern .sp-kind.attack { color: #ff4d6d; border-color: #ff4d6d; box-shadow: 0 0 6px rgba(255,77,109,.5); }
+  body.modern .sp-kind.defense { color: #39ff88; border-color: #39ff88; box-shadow: 0 0 6px rgba(57,255,136,.5); }
+  body.modern .sp-kind.either { color: #ffe600; border-color: #ffe600; box-shadow: 0 0 6px rgba(255,230,0,.4); }
+  body.modern .sp-ctx { color: #9fe8ff; }
+  body.modern .sp-how { color: #7fa6b4; }
+  body.modern .legend-keys { color: #8fb8c6; }
+  body.modern .total.good { color: #39ff88; } body.modern .total.bad { color: #ff4d6d; }
+  body.modern .err { color: #ff4d6d; }
+  body.modern details summary { color: #7fbccc; }
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
 
 <div id="app">
+  <div class="modebar"><span id="modeLabel">Display</span>
+    <span class="seg" role="group" aria-labelledby="modeLabel">
+      <button type="button" id="modeModern" aria-pressed="true">Modern</button><button type="button" id="modeLegacy" aria-pressed="false">Legacy</button>
+    </span>
+  </div>
   <section class="win" aria-label="TetriNET Online">
     <div class="titlebar"><span class="ico" aria-hidden="true"></span><span class="grow" id="onlineTitle">TetriNET — Online</span><span class="fake" aria-hidden="true">_</span><span class="fake" aria-hidden="true">×</span></div>
 
@@ -252,6 +339,15 @@
     <div class="stage-wrap">
       <canvas id="stage" width="1198" height="890" tabindex="0" aria-label="Playing fields. Click here, then use the keyboard to play."></canvas>
       <input id="chat" type="text" maxlength="200" placeholder="Type a message and press Enter (Esc hides)" hidden>
+    </div>
+    <div class="spinfo" id="spInfo" aria-live="polite">
+      <canvas id="spIcon" width="32" height="32" aria-hidden="true"></canvas>
+      <div>
+        <div class="sp-title" id="spTitle"></div>
+        <div class="sp-desc" id="spDesc"></div>
+        <div class="sp-ctx" id="spCtx"></div>
+        <div class="sp-how" id="spHow"></div>
+      </div>
     </div>
     <div class="touch" id="touch" aria-label="Touch controls">
       <button type="button" data-k="left">◀</button>
@@ -493,7 +589,7 @@ const DEFAULTS = {
   // specials a c n r s b g q o
   specials: [19, 16, 3, 14, 3, 14, 6, 11, 14],
   keys: ['ArrowUp', 'Control', 'ArrowDown', ' ', 'ArrowLeft', 'ArrowRight'],
-  sound: true, music: true,
+  sound: true, music: true, mode: 'modern',
   bots: [
     { on: true,  name: 'St0rmCat', team: '', skill: 1 },
     { on: true,  name: 'Darktick', team: '', skill: 1 },
@@ -1466,6 +1562,64 @@ function themeFromBitmap(img, original) {        // layout used by 0x442768 (sma
   G.dirty = true;
 }
 builtInTheme();
+
+/* ---------- Modern (neon grid) theme ---------- */
+const THEME_M = { big: [], small: [], bg: null, sbg: null };
+const NEON = { '1': '#00e5ff', '2': '#ffe600', '3': '#39ff88', '4': '#ff3df2', '5': '#ff7a1a' };
+const SP_KIND = { a: 'attack', c: 'defense', n: 'defense', r: 'attack', s: 'either', b: 'attack', g: 'defense', q: 'attack', o: 'attack' };
+const KIND_COLOR = { attack: '#ff4d6d', defense: '#39ff88', either: '#ffe600' };
+function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; }
+function neonSprite(ch, s) {
+  const c = mk(s, s), x = c.getContext('2d');
+  x.fillStyle = '#02050c'; x.fillRect(0, 0, s, s);
+  if (NEON[ch]) {
+    const col = NEON[ch];
+    const g = x.createLinearGradient(0, 0, s, s);
+    g.addColorStop(0, rgba(col, 0.55)); g.addColorStop(1, rgba(col, 0.18));
+    x.fillStyle = g; x.fillRect(1, 1, s - 2, s - 2);
+    x.strokeStyle = col; x.lineWidth = 1; x.strokeRect(1.5, 1.5, s - 3, s - 3);
+    if (s >= 16) {
+      x.strokeStyle = rgba('#ffffff', 0.55); x.beginPath(); x.moveTo(3.5, 3.5); x.lineTo(s - 4.5, 3.5); x.stroke();
+      x.fillStyle = rgba(col, 0.9); x.fillRect(s / 2 - 2, s / 2 - 2, 4, 4);
+      x.fillStyle = rgba('#ffffff', 0.8); x.fillRect(s / 2 - 1, s / 2 - 1, 2, 2);
+    } else {
+      x.fillStyle = rgba('#ffffff', 0.7); x.fillRect(s / 2 - 1, s / 2 - 1, 2, 2);
+    }
+  } else {
+    const col = KIND_COLOR[SP_KIND[ch]] || '#00e5ff';
+    x.fillStyle = rgba(col, 0.12); x.fillRect(1, 1, s - 2, s - 2);
+    x.strokeStyle = col; x.lineWidth = 1;
+    x.beginPath(); x.arc(s / 2, s / 2, s / 2 - 1.5, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = '#ffffff';
+    x.font = (s >= 16 ? 'bold 10px' : 'bold 6px') + ' Orbitron, Arial, sans-serif';
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(ch.toUpperCase(), s / 2, s / 2 + (s >= 16 ? 1 : 0.5));
+  }
+  return c;
+}
+function neonBackground(w, h, cell) {
+  const c = mk(w, h), x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, '#02040a'); g.addColorStop(0.75, '#040a18'); g.addColorStop(1, '#12061c');
+  x.fillStyle = g; x.fillRect(0, 0, w, h);
+  for (let i = 0; i <= w; i += cell) { x.fillStyle = rgba('#00e5ff', i % (cell * 4) === 0 ? 0.16 : 0.07); x.fillRect(i === w ? w - 1 : i, 0, 1, h); }
+  for (let j = 0; j <= h; j += cell) { x.fillStyle = rgba('#00e5ff', j % (cell * 4) === 0 ? 0.16 : 0.07); x.fillRect(0, j === h ? h - 1 : j, w, 1); }
+  const hz = x.createLinearGradient(0, h * 0.8, 0, h);
+  hz.addColorStop(0, 'rgba(255,61,242,0)'); hz.addColorStop(1, 'rgba(255,61,242,0.18)');
+  x.fillStyle = hz; x.fillRect(0, h * 0.8, w, h * 0.2);
+  return c;
+}
+function buildModernTheme() {
+  THEME_M.big = []; THEME_M.small = [];
+  for (const ch of BLOCKCHARS) { THEME_M.big.push(neonSprite(ch, 16)); THEME_M.small.push(neonSprite(ch, 8)); }
+  THEME_M.bg = neonBackground(192, 352, 16);
+  THEME_M.sbg = neonBackground(96, 176, 8);
+  G.dirty = true;
+}
+buildModernTheme();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { buildModernTheme(); spKey = ''; });
+const isModern = () => S.mode === 'modern';
+const TH = () => isModern() ? THEME_M : THEME;
 function loadOriginalTheme() {
   const img = new Image();
   img.onload = () => themeFromBitmap(img, true);
@@ -1482,27 +1636,41 @@ const SC = 2;
 const SLOTS = [null, { x: 1, y: 20, big: true, px: 1, py: 2, pw: 192 },
   { x: 304, y: 20, px: 304, py: 2 }, { x: 403, y: 20, px: 403, py: 2 }, { x: 502, y: 20, px: 502, py: 2 },
   { x: 403, y: 218, px: 403, py: 200 }, { x: 502, y: 218, px: 502, py: 200 }];
-const FACE = '#c0c0c0', HI = '#ffffff', LO = '#808080', DK = '#000000';
-const UIFONT = '11px Tahoma, Verdana, Arial, sans-serif';
+const PAL_L = { face: '#c0c0c0', hi: '#ffffff', lo: '#808080', text: '#000000', value: '#000000', panel: '#c0c0c0', panelText: '#000000',
+  box: '#ffffff', boxText: '#000000', bad: '#b00000', good: '#006000', name: '#000080', msg: '#000000', msgText: '#ffffff', inv: '#c0c0c0', sel: '#ff0000',
+  font: 'Tahoma, Verdana, Arial, sans-serif', valFont: 'bold 12px Arial, sans-serif', boxFont: 'Arial, sans-serif', upper: false };
+const PAL_M = { face: '#050914', hi: 'rgba(0,229,255,0.55)', lo: 'rgba(0,229,255,0.55)', text: '#7fdfff', value: '#00e5ff', panel: '#07101f', panelText: '#bdf6ff',
+  box: '#030812', boxText: '#9fb8c8', bad: '#ff4d6d', good: '#39ff88', name: '#00e5ff', msg: '#02050c', msgText: '#bdf6ff', inv: '#030812', sel: '#ff3df2',
+  font: 'Rajdhani, Tahoma, Arial, sans-serif', valFont: 'bold 13px Orbitron, Arial, sans-serif', boxFont: 'Rajdhani, Arial, sans-serif', upper: true };
+let P = PAL_L;
+let UIFONT = '11px Tahoma, Verdana, Arial, sans-serif';
 
 function bevelLowered(x, y, w, h) {
-  cx.fillStyle = LO; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
-  cx.fillStyle = HI; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
+  if (P.upper) {                                   // modern: thin neon frame with a soft glow
+    cx.save(); cx.shadowColor = 'rgba(0,229,255,0.6)'; cx.shadowBlur = 6;
+    cx.strokeStyle = P.hi; cx.lineWidth = 1; cx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1); cx.restore();
+    return;
+  }
+  cx.fillStyle = P.lo; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
+  cx.fillStyle = P.hi; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
 }
-function panelRaised(x, y, w, h, caption, color) {
-  cx.fillStyle = color || FACE; cx.fillRect(x, y, w, h);
-  cx.fillStyle = HI; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
-  cx.fillStyle = LO; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
+function panelRaised(x, y, w, h, caption, color, accent) {
+  cx.fillStyle = color || P.panel; cx.fillRect(x, y, w, h);
+  if (P.upper) { cx.fillStyle = accent || 'rgba(0,229,255,0.7)'; cx.fillRect(x, y + h - 1, w, 1); }
+  else {
+    cx.fillStyle = P.hi; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
+    cx.fillStyle = P.lo; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
+  }
   cx.save();
   cx.beginPath(); cx.rect(x + 2, y, w - 4, h); cx.clip();
-  cx.fillStyle = DK; cx.font = UIFONT; cx.textAlign = 'center'; cx.textBaseline = 'middle';
-  cx.fillText(caption, x + w / 2, y + h / 2 + 0.5);
+  cx.fillStyle = accent && P.upper ? accent : P.panelText; cx.font = P.upper ? '600 12px ' + P.font : UIFONT; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  cx.fillText(P.upper ? caption.toUpperCase() : caption, x + w / 2, y + h / 2 + 0.5);
   cx.restore();
 }
 function slotFor(num) { return num < G.me ? num + 1 : (num === G.me ? 1 : num); }
 function slotToNum(slot) { for (let n = 1; n <= 6; n++) if (slotFor(n) === slot) return n; return 0; }
 function drawField(p, slot) {
-  const sl = SLOTS[slot], s = sl.big ? 16 : 8, bg = sl.big ? THEME.bg : THEME.sbg, spr = sl.big ? THEME.big : THEME.small;
+  const T = TH(), sl = SLOTS[slot], s = sl.big ? 16 : 8, bg = sl.big ? T.bg : T.sbg, spr = sl.big ? T.big : T.small;
   cx.drawImage(bg, sl.x, sl.y);
   if (!p) return;
   let f = p.field;
@@ -1526,7 +1694,11 @@ function nameOf(p) { return p ? p.name : '?'; }
 function render() {
   cx.setTransform(SC, 0, 0, SC, 0, 0);
   cx.imageSmoothingEnabled = false;
-  cx.fillStyle = FACE; cx.fillRect(0, 0, 599, 445);
+  P = isModern() ? PAL_M : PAL_L;
+  UIFONT = P.upper ? '600 11px ' + P.font : '11px Tahoma, Verdana, Arial, sans-serif';
+  const T = TH();
+  const label = t => P.upper ? t.toUpperCase() : t;
+  cx.fillStyle = P.face; cx.fillRect(0, 0, 599, 445);
 
   // bevels (Bevel31..36)
   bevelLowered(0, 1, 194, 372);
@@ -1544,7 +1716,8 @@ function render() {
       cap = p.num + '. ' + p.name;
       if (G.winner && (G.winner === p.num || sameTeam(G.players[G.winner], p))) cap += ' WON!';
     }
-    panelRaised(sl.px, sl.py, sl.big ? 192 : 96, 18, cap, slot === 1 ? '#c0c0c0' : FACE);
+    const accent = P.upper && p && p.present ? (p.dead ? '#ff4d6d' : (G.winner && cap.endsWith('WON!') ? '#39ff88' : null)) : null;
+    panelRaised(sl.px, sl.py, sl.big ? 192 : 96, 18, cap, null, accent);
     drawField(p && p.present ? p : null, slot);
     if (p && p.present && p.team && !sl.big) {
       cx.font = '9px Tahoma, Arial, sans-serif'; cx.textAlign = 'left'; cx.textBaseline = 'top';
@@ -1555,50 +1728,53 @@ function render() {
   const me = ME();
 
   // next piece
-  cx.fillStyle = DK; cx.font = UIFONT; cx.textAlign = 'left'; cx.textBaseline = 'top';
-  cx.fillText('Next Piece:', 213, 20);
+  cx.fillStyle = P.text; cx.font = UIFONT; cx.textAlign = 'left'; cx.textBaseline = 'top';
+  cx.fillText(label('Next Piece:'), 213, 20);
   bevelLowered(212, 33, 74, 74);
-  cx.fillStyle = '#000'; cx.fillRect(213, 34, 72, 72);
+  cx.fillStyle = P.upper ? '#02050c' : '#000'; cx.fillRect(213, 34, 72, 72);
   if (me.next) {
     const s = me.next, w = pw(s), h = ph(s);
     for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) {
       const ch = s.charAt(4 + r * w + c);
-      if (ch !== '0') cx.drawImage(THEME.big[BLOCKCHARS.indexOf(ch)], 217 + c * 16, 37 + r * 16);
+      if (ch !== '0') cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], 217 + c * 16, 37 + r * 16);
     }
   }
 
   // lines / level
-  cx.fillStyle = DK; cx.font = UIFONT; cx.textAlign = 'left';
-  cx.fillText('Lines:', 205, 122);
-  cx.fillText('Level:', 205, 147);
-  cx.font = 'bold 12px Arial, sans-serif'; cx.textAlign = 'right';
+  cx.fillStyle = P.text; cx.font = UIFONT; cx.textAlign = 'left';
+  cx.fillText(label('Lines:'), 205, 122);
+  cx.fillText(label('Level:'), 205, 147);
+  cx.font = P.valFont; cx.textAlign = 'right'; cx.fillStyle = P.value;
+  if (P.upper) { cx.shadowColor = 'rgba(0,229,255,0.8)'; cx.shadowBlur = 6; }
   cx.fillText(String(me.present ? me.lines : 0), 294, 121);
   cx.fillText(String(me.present ? me.level : 1), 294, 146);
   if (R.averaged && G.players.some(p => p && p.present)) {
-    cx.font = UIFONT; cx.textAlign = 'left'; cx.fillText('Active Level:', 204, 160);
-    cx.font = 'bold 12px Arial, sans-serif'; cx.textAlign = 'right'; cx.fillText(String(G.avgLevel), 294, 159);
+    cx.fillText(String(G.avgLevel), 294, 159);
+    cx.shadowBlur = 0;
+    cx.font = P.upper ? '600 10px ' + P.font : UIFONT; cx.textAlign = 'left'; cx.fillStyle = P.text; cx.fillText(label('Active Level:'), 204, 160);
   }
+  cx.shadowBlur = 0;
 
   // attacks / defenses
-  cx.font = UIFONT; cx.textAlign = 'left'; cx.fillStyle = DK;
-  cx.fillText('Attacks/Defenses:', 201, 192);
+  cx.font = UIFONT; cx.textAlign = 'left'; cx.fillStyle = P.text;
+  cx.fillText(label('Attacks/Defenses:'), 201, 192);
   bevelLowered(197, 204, 201, 165);
-  cx.fillStyle = '#fff'; cx.fillRect(198, 205, 199, 163);
+  cx.fillStyle = P.box; cx.fillRect(198, 205, 199, 163);
   cx.save(); cx.beginPath(); cx.rect(198, 205, 199, 163); cx.clip();
   const lines = [];
-  cx.font = '10px Arial, sans-serif';
+  cx.font = (P.upper ? '11px ' : '10px ') + P.boxFont;
   for (const a of G.attacks) {
     let segs;
-    if (a.lines) segs = [[a.no + '. ', '#000', false], [a.lines + ' Line' + (a.lines > 1 ? 's' : '') + ' Added to All', '#b00000', true], [' from ', '#000', false], [nameOf(a.from), '#000080', true]];
+    if (a.lines) segs = [[a.no + '. ', P.boxText, false], [a.lines + ' Line' + (a.lines > 1 ? 's' : '') + ' Added to All', P.bad, true], [' from ', P.boxText, false], [nameOf(a.from), P.name, true]];
     else {
       const good = 'cngs'.indexOf(a.sp) >= 0 && a.on === a.from;
-      segs = [[a.no + '. ', '#000', false], [SNAME[a.sp], good ? '#006000' : '#b00000', true], [' on ', '#000', false], [nameOf(a.on), '#000080', true], [' from ', '#000', false], [nameOf(a.from), '#000080', true]];
+      segs = [[a.no + '. ', P.boxText, false], [SNAME[a.sp], good ? P.good : P.bad, true], [' on ', P.boxText, false], [nameOf(a.on), P.name, true], [' from ', P.boxText, false], [nameOf(a.from), P.name, true]];
     }
     // lay out segments with wrapping
     let row = [], wsum = 0;
     const flush = () => { lines.push(row); row = []; wsum = 0; };
     for (const [t, col, bold] of segs) {
-      cx.font = (bold ? 'bold ' : '') + '10px Arial, sans-serif';
+      cx.font = (bold ? 'bold ' : '') + (P.upper ? '11px ' : '10px ') + P.boxFont;
       const parts = t.split(/(\s+)/);
       for (const part of parts) {
         if (!part) continue;
@@ -1613,30 +1789,32 @@ function render() {
   for (let i = start; i < lines.length; i++) {
     const yy = 207 + (i - start) * 12;
     for (const [t, col, bold, off] of lines[i]) {
-      cx.font = (bold ? 'bold ' : '') + '10px Arial, sans-serif'; cx.fillStyle = col;
+      cx.font = (bold ? 'bold ' : '') + (P.upper ? '11px ' : '10px ') + P.boxFont; cx.fillStyle = col;
       cx.fillText(t, 201 + off, yy);
     }
   }
   cx.restore();
 
   // inventory (Label22 + sbpb)
-  cx.font = UIFONT; cx.textAlign = 'left'; cx.fillStyle = DK;
+  cx.font = UIFONT; cx.textAlign = 'left'; cx.fillStyle = P.upper ? (me.inv ? KIND_COLOR[SP_KIND[me.inv[0]]] : P.text) : P.text;
   const first = me.inv ? SNAME[me.inv[0]] : (G.running && !me.dead ? 'No Special Blocks' : '');
   cx.save(); cx.beginPath(); cx.rect(1, 378, 106, 18); cx.clip();
-  cx.fillText(first, 2, 381);
+  cx.fillText(P.upper ? first.toUpperCase() : first, 2, 381);
   cx.restore();
   bevelLowered(107, 375, 292, 22);
-  cx.fillStyle = FACE; cx.fillRect(110, 378, 288, 16);
+  cx.fillStyle = P.inv; cx.fillRect(110, 378, 288, 16);
   for (let i = 0; i < 18; i++) {
     const ch = me.inv.charAt(i);
-    if (ch) cx.drawImage(THEME.big[BLOCKCHARS.indexOf(ch)], 110 + i * 16, 378);
+    if (ch) cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], 110 + i * 16, 378);
   }
-  cx.strokeStyle = '#ff0000'; cx.lineWidth = 2; cx.strokeRect(109, 377, 18, 18);
+  if (P.upper) { cx.save(); cx.shadowColor = P.sel; cx.shadowBlur = 8; }
+  cx.strokeStyle = P.sel; cx.lineWidth = 2; cx.strokeRect(109, 377, 18, 18);
+  if (P.upper) cx.restore();
 
   // message box (Label3)
   bevelLowered(1, 399, 597, 45);
-  cx.fillStyle = '#000'; cx.fillRect(2, 400, 595, 43);
-  cx.font = '11px Arial, sans-serif'; cx.fillStyle = '#fff'; cx.textAlign = 'left';
+  cx.fillStyle = P.msg; cx.fillRect(2, 400, 595, 43);
+  cx.font = (P.upper ? '600 12px ' : '11px ') + P.boxFont; cx.fillStyle = P.msgText; cx.textAlign = 'left';
   const ml = [];
   for (const m of G.msgs) for (const l of wrapText(m, 588)) ml.push(l);
   const ms = ml.slice(-3);
@@ -1645,7 +1823,7 @@ function render() {
   // pause overlay on main field
   if (G.paused) {
     cx.fillStyle = 'rgba(0,0,0,.55)'; cx.fillRect(1, 20, 192, 352);
-    cx.fillStyle = '#fff'; cx.font = 'bold 16px Arial, sans-serif'; cx.textAlign = 'center';
+    cx.fillStyle = P.upper ? '#00e5ff' : '#fff'; cx.font = P.upper ? 'bold 16px Orbitron, Arial, sans-serif' : 'bold 16px Arial, sans-serif'; cx.textAlign = 'center';
     cx.fillText('PAUSED', 97, 190);
   }
   if (!G.running && !G.players.some(p => p && p.present)) {
@@ -1658,6 +1836,7 @@ function render() {
 function frame() {
   if (G.dirty || G.running) { render(); G.dirty = false; }
   statusTick();
+  updateSpInfo();
   requestAnimationFrame(frame);
 }
 
@@ -2261,6 +2440,88 @@ $('plineForm').addEventListener('submit', e => {
 $('nicklist').addEventListener('click', e => { const b = e.target.closest('button[data-kick]'); if (b) netSend({ t: 'kick', slot: parseInt(b.dataset.kick, 10) }); });
 if (location.protocol === 'http:' || location.protocol === 'https:') netConnect();
 else netStatus('Online play needs the hosted server. You can still practise offline below.', true);
+
+/* ==========================================================================
+   Display mode + special block info box
+   ========================================================================== */
+function applyMode() {
+  document.body.classList.toggle('modern', isModern());
+  $('modeModern').setAttribute('aria-pressed', String(isModern()));
+  $('modeLegacy').setAttribute('aria-pressed', String(!isModern()));
+  spKey = '';
+  G.dirty = true;
+}
+function setMode(m) { S.mode = m; saveSettings(); applyMode(); }
+$('modeModern').addEventListener('click', () => setMode('modern'));
+$('modeLegacy').addEventListener('click', () => setMode('legacy'));
+
+const SP_INFO = {
+  a: 'Adds a junk line to the bottom of that player’s field, pushing their whole stack up one row.',
+  c: 'Removes the bottom line of the field and drops everything above it one row. Specials in that line are not collected.',
+  n: 'Wipes every block off the field for a fresh start.',
+  r: 'Blanks 10 random cells in that player’s field, punching holes in their stack.',
+  s: 'Swaps your field with that player’s. Any stack taller than 16 rows is cut down to 16 by removing bottom rows.',
+  b: 'Turns every special block in that player’s field into a plain block, so they can’t collect them.',
+  g: 'Pulls every block straight down, filling all the gaps. Lines completed this way clear, but give no specials or level progress.',
+  q: 'Shakes that player’s field: each row slides left or right by up to 3 cells, and blocks pushed off the edge are lost.',
+  o: 'Every O block in that field explodes: the 3×3 area around it is scattered to random spots in the lower part of the field.'
+};
+const KIND_LABEL = { attack: 'Attack', defense: 'Defense', either: 'Situational' };
+let spKey = '';
+function drawSprite(canvas, ch, scale) {
+  const x = canvas.getContext('2d'), T = TH(), k = BLOCKCHARS.indexOf(ch);
+  x.imageSmoothingEnabled = false;
+  x.clearRect(0, 0, canvas.width, canvas.height);
+  if (k >= 0) x.drawImage(T.big[k], 0, 0, 16 * scale, 16 * scale);
+}
+function spNames(list) { return list.map(([p, n]) => esc(p.name) + (n != null ? ' ×' + n : '')).join(' · '); }
+function updateSpInfo() {
+  const me = ME();
+  const playing = G.running && me.present && !me.dead;
+  const sp = playing && me.inv ? me.inv[0] : '';
+  const opp = playing ? present().filter(q => q !== me && !q.dead && !sameTeam(me, q)) : [];
+  let title, desc, ctx = '', how = '';
+  if (!sp) {
+    title = playing ? 'No special blocks' : 'Special blocks';
+    desc = playing
+      ? 'Clear a line that contains a lettered block to collect it. The first block in your inventory (the one in the box) is the one you use next.'
+      : 'Special blocks you collect show up here with an explanation of what the next one does.';
+  } else {
+    const kind = SP_KIND[sp];
+    title = 'Next: ' + esc(SNAME[sp]) + ' <span class="sp-kind ' + kind + '">' + KIND_LABEL[kind].toUpperCase() + '</span>';
+    desc = SP_INFO[sp];
+    const myH = stackHeight(me.field);
+    const byH = opp.slice().sort((a, b) => stackHeight(b.field) - stackHeight(a.field));
+    if (sp === 'a' || sp === 'r' || sp === 'q') ctx = byH.length ? 'Tallest opponent stack: ' + esc(byH[0].name) + ' (' + stackHeight(byH[0].field) + ' rows).' : 'No opponents left to use it on.';
+    else if (sp === 'o') {
+      const hits = opp.map(q => [q, countIn(q.field, /o/)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+      ctx = hits.length ? 'O blocks on: ' + spNames(hits) + '.' : 'No opponent has O blocks right now, so it would do nothing yet.';
+    } else if (sp === 'b') {
+      const hits = opp.map(q => [q, countIn(q.field, /[acnrsbgqo]/)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+      ctx = hits.length ? 'Special blocks on: ' + spNames(hits) + '.' : 'No opponent has special blocks in their field right now.';
+    } else if (sp === 's') {
+      const low = byH[byH.length - 1];
+      ctx = 'Your stack: ' + myH + ' rows.' + (low ? ' Lowest opponent: ' + esc(low.name) + ' (' + stackHeight(low.field) + ' rows).' : '');
+    } else if (sp === 'g') ctx = 'Your stack: ' + myH + ' rows, ' + holesOf(me.field) + ' gaps to fill.';
+    else ctx = 'Your stack: ' + myH + ' rows.';
+    const nums = opp.map(q => '<kbd>' + q.num + '</kbd>').join(' ');
+    if (SP_KIND[sp] === 'defense') how = 'Press <kbd>' + me.num + '</kbd> to use it on yourself.';
+    else how = (nums ? 'Press ' + nums + ' to use it on that player.' : '') + (sp === 's' ? '' : ' (You can also use it on yourself with <kbd>' + me.num + '</kbd>.)');
+    how += ' <kbd>D</kbd> discards it.';
+    const rest = me.inv.slice(1, 7);
+    if (rest) how += ' <span>Then:</span><span class="sp-queue" id="spQueue"></span>';
+  }
+  const key = [S.mode, title, desc, ctx, how, me.inv.slice(0, 7)].join('|');
+  if (key === spKey) return;
+  spKey = key;
+  $('spTitle').innerHTML = title; $('spDesc').textContent = desc; $('spCtx').innerHTML = ctx; $('spHow').innerHTML = how;
+  $('spCtx').hidden = !ctx; $('spHow').hidden = !how;
+  const icon = $('spIcon');
+  if (sp) { icon.style.visibility = 'visible'; drawSprite(icon, sp, 2); } else icon.style.visibility = 'hidden';
+  const q = $('spQueue');
+  if (q) for (const ch of me.inv.slice(1, 7)) { const c = document.createElement('canvas'); c.width = 16; c.height = 16; drawSprite(c, ch, 1); c.title = SNAME[ch]; q.appendChild(c); }
+}
+applyMode();
 
 // boot
 buildForm();
