@@ -1440,30 +1440,50 @@ function addMsg(text) {
 /* ==========================================================================
    Computer opponents (not in the original client)
    ========================================================================== */
-const BOT_THINK = [1150, 560, 240, 70];
+// Bots play at a human pace: think, visibly rotate and slide the piece one step at a time, let it fall
+// for a moment, then drop it. Roughly 5 / 10 / 17 / 31 pieces a minute for Easy / Normal / Hard / Expert.
+const BOT_THINK = [3000, 2800, 1500, 700];     // ms before the first move (plus or minus 30%)
+const BOT_STEP = [250, 150, 90, 50];           // ms per rotation / sideways step
+const BOT_LINGER = [5000, 1500, 600, 0];       // ms the piece is left to fall on its own once it's in place
+const BOT_SOFT = [true, false, false, false];  // Easy slides the piece down (soft drop) instead of slamming it
 const BOT_NOISE = [3.2, 1.0, 0.25, 0];
-function botSpecialDelay(p) { return [2600, 1600, 900, 500][p.bot.skill] + Random(700); }
+// how often a bot uses its next special block: Easy 10-15 s, Normal 6-9 s, Hard 3-5 s, Expert 1-2 s
+function botSpecialDelay(p) { return [10000, 6000, 3000, 1000][p.bot.skill] + Random([5000, 3000, 2000, 1000][p.bot.skill]); }
 function botOnSpawn(p) {
   const base = BOT_THINK[p.bot.skill];
+  p.botPlan = null;
   p.tBot.interval = Math.max(20, base + Random(Math.max(1, Math.trunc(base * 0.6))) - Math.trunc(base * 0.3));
   p.tBot.enabled = false;
   p.tBot.setEnabled(true);
 }
 function botThinkTick(p) {
-  p.tBot.setEnabled(false);
-  if (!G.running || p.dead || !p.cur) return;
-  if (G.paused) { p.tBot.setEnabled(true); return; }
-  const plan = botPlan(p);
-  if (plan) {
-    for (let r = 0; r < plan.r; r++) {
-      const res = tryRotate(p.field, p.cur, p.x, p.y, 2);
-      if (res) { p.cur = res.s; p.x = res.x; }
-    }
-    let guard = 20;
-    while (p.x < plan.x && guard-- > 0) { if (collide(p.field, p.x + 1, p.y, p.cur)) break; p.x++; }
-    while (p.x > plan.x && guard-- > 0) { if (collide(p.field, p.x - 1, p.y, p.cur)) break; p.x--; }
+  if (!G.running || p.dead || !p.cur) { p.tBot.setEnabled(false); p.botPlan = null; return; }
+  if (G.paused) return;                          // keep waiting; carry on after the pause
+  const sk = p.bot.skill;
+  if (!p.botPlan) {                              // decide where the piece goes
+    const plan = botPlan(p) || { r: 0, x: p.x };
+    p.botPlan = { left: plan.r, x: plan.x };
+    p.tBot.setInterval(BOT_STEP[sk]);
+    return;
   }
-  hardDrop(p);
+  const pl = p.botPlan;
+  if (pl.left > 0) {                             // one rotation per step
+    pl.left--;
+    const res = tryRotate(p.field, p.cur, p.x, p.y, 2);
+    if (res) { p.cur = res.s; p.x = res.x; G.dirty = true; }
+    return;
+  }
+  if (p.x !== pl.x) {                            // one column per step
+    const dx = pl.x > p.x ? 1 : -1;
+    if (!collide(p.field, p.x + dx, p.y, p.cur)) { p.x += dx; G.dirty = true; return; }
+  }
+  if (!pl.lingered && BOT_LINGER[sk] > 0) {      // in place: let gravity carry it for a moment
+    pl.lingered = true;
+    p.tBot.setInterval(BOT_LINGER[sk]);
+    return;
+  }
+  p.tBot.setEnabled(false); p.botPlan = null;  // then drop it
+  if (BOT_SOFT[sk]) softDropDown(p); else hardDrop(p);
 }
 function evaluateBoard(g, s, x, y, p) {
   let rows = 0, spc = 0;
@@ -1539,6 +1559,12 @@ function botSpecialTick(p) {
   const byH = opp.slice().sort((a, b) => stackHeight(b.field) - stackHeight(a.field));
   const pickAttack = () => opp.length ? (Random(3) === 0 ? opp[Random(opp.length)] : byH[0]) : null;
   let target = null, drop = false;
+  // Easy is defensive: it only attacks when its own stack is getting high or its inventory is full;
+  // otherwise it throws attack blocks away (once it has a few) so its defensive blocks come up
+  if (p.bot.skill === 0 && SP_KIND[sp] !== 'defense' && !(myH >= 12 || p.inv.length >= R.capacity)) {
+    if (p.inv.length > 3) { p.inv = p.inv.substr(1); G.dirty = true; }
+    return;
+  }
   switch (sp) {
     case 'a': case 'r': case 'q': target = pickAttack(); if (!target) drop = true; break;
     case 'o': {
