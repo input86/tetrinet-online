@@ -256,19 +256,7 @@
     .grid-players { grid-template-columns: auto 1fr 1fr; }
     .grid-players .hide-sm { display: none; }
   }
-  .landing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
-  .roomlist { background: var(--field); border: 1px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); box-shadow: inset 1px 1px 0 var(--dk); min-height: 150px; max-height: 260px; overflow-y: auto; padding: 4px; font: 12px Arial, sans-serif; }
-  .roomlist .room { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 5px 6px; border-bottom: 1px solid #e0e0e0; align-items: center; }
-  .roomlist .room:last-child { border-bottom: 0; }
-  .roomlist .room .rn { font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .roomlist .room .meta { color: #404040; font-size: 11px; font-variant-numeric: tabular-nums; }
-  .roomlist .room button { grid-row: 1 / span 2; grid-column: 2; }
   .invite { margin-top: 10px; padding: 8px 10px; background: #ffffe1; border: 1px solid #000; }
-  .roombar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
-  .roombar .grow { flex: 1; }
-  .badge { font-size: 11px; font-weight: bold; padding: 1px 6px; border: 1px solid; }
-  .badge.pub { background: #d8f0d8; border-color: #006400; color: #004000; }
-  .badge.priv { background: #f6dede; border-color: #800000; color: #600000; }
   .lab { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
   .lab label { flex: 0 1 auto; }
   .help { min-height: 0; width: 18px; height: 18px; padding: 0; border-radius: 50%; font: bold 11px/16px Arial, sans-serif; text-align: center; flex: none; cursor: help; vertical-align: middle; }
@@ -276,17 +264,73 @@
   .helppop { position: fixed; z-index: 200; max-width: min(320px, calc(100vw - 24px)); background: #ffffe1; color: #000; border: 1px solid #000; box-shadow: 2px 3px 0 rgba(0,0,0,.3); padding: 8px 10px; font: 12px/1.45 Arial, sans-serif; }
   body.modern .help { border-radius: 50%; padding: 0; font-family: Arial, sans-serif; letter-spacing: 0; }
   body.modern .helppop { background: #050b18; color: #d6fbff; border: 1px solid #ff3df2; box-shadow: 0 0 16px rgba(255,61,242,.35); font-family: Rajdhani, Arial, sans-serif; font-size: 14px; }
+  /* ---------- lobby (landing page) ---------- */
+  .lob { margin: 6px 4px 4px; padding: 12px 14px 12px; }
+  .who { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 6px; }
+  .who .lbl { font-weight: bold; }
+  .who #j_nick { width: 220px; font-size: 15px; padding: 5px 8px; }
+  .who .team { display: inline-flex; align-items: center; gap: 6px; }
+  .who #j_team { width: 120px; }
+  .lcols { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 18px; margin-top: 12px; }
+  .lh { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; margin: 0 0 6px 1px; }
+  .lh .n { font-weight: normal; font-size: 11px; opacity: .8; }
+  .cards { display: flex; flex-direction: column; gap: 7px; max-height: 330px; overflow-y: auto; padding: 1px; }
+  .gcard { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 12px; align-items: center; padding: 8px 10px; background: var(--field); border: 1px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); cursor: pointer; text-align: left; }
+  .gcard .gn { font-weight: bold; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gcard .gs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 9px; font-size: 12px; opacity: .85; }
+  .gcard > button { grid-row: 1 / span 2; grid-column: 2; min-width: 76px; }
+  .pips { display: inline-flex; gap: 3px; }
+  .pips i { width: 8px; height: 8px; border: 1px solid #000080; display: inline-block; }
+  .pips i.on { background: #000080; }
+  .chip { font-size: 10px; font-weight: bold; letter-spacing: .06em; padding: 0 5px; border: 1px solid; text-transform: uppercase; white-space: nowrap; }
+  .chip.wait, .chip.pub { color: #006000; border-color: #006000; background: #e4f4e4; }
+  .chip.play { color: #7a5a00; border-color: #7a5a00; background: #fff4cc; }
+  .chip.priv { color: #800000; border-color: #800000; background: #f6dede; }
+  .empty { text-align: center; padding: 22px 10px; border: 1px dashed var(--lo); background: var(--field); }
+  .empty b { display: block; margin-bottom: 4px; }
+  .lside { border-left: 1px solid var(--lo); padding-left: 18px; display: flex; flex-direction: column; }
+  .lside .wide, .newbtn { width: 100%; min-height: 36px; }
+  .newbtn { font-weight: bold; font-size: 14px; }
+  .hint { font-size: 11px; opacity: .8; margin: 5px 0 0; line-height: 1.35; }
+  .codein { width: 100%; font: bold 17px/1.2 "Courier New", monospace; letter-spacing: .3em; text-transform: uppercase; text-align: center; padding: 6px; }
+  #codeForm { margin-top: 18px; display: flex; flex-direction: column; gap: 7px; }
+  #codeForm input[type="password"] { width: 100%; }
+  .create { margin-top: 12px; padding: 12px; border: 1px solid; border-color: var(--hi) var(--lo) var(--lo) var(--hi); }
+  .create .crow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .create .crow input { flex: 1 1 180px; min-width: 0; font-size: 14px; padding: 5px 8px; }
+  .create .crow .newbtn { width: auto; padding: 0 22px; }
+  .seg2 { display: inline-flex; }
+  .seg2 button[aria-pressed="true"] { font-weight: bold; box-shadow: inset 1px 1px 0 var(--dk); background: var(--field); }
+  .linkbtn { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; min-height: 0 !important; color: #000080; text-decoration: underline dotted; cursor: pointer; font: inherit; letter-spacing: normal !important; text-transform: none !important; }
+  .lfoot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--lo); font-size: 12px; }
+  .invite { margin-top: 10px; padding: 8px 10px; background: #ffffe1; border: 1px solid #000; }
   .joinrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
-  .lobby { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 10px; margin-top: 10px; }
-  @media (max-width: 620px) { .lobby { grid-template-columns: 1fr; } }
-  .pline, .nicklist { background: var(--field); border: 1px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); box-shadow: inset 1px 1px 0 var(--dk); font: 12px Arial, sans-serif; padding: 4px 6px; overflow-y: auto; }
-  .pline { height: 170px; overflow-wrap: anywhere; }
-  .pline .sys { color: #000080; }
-  .pline .act { color: #800080; }
-  .nicklist { min-height: 170px; }
-  .nicklist .nick { display: flex; align-items: center; gap: 6px; min-height: 24px; }
-  .nicklist .nick span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .nicklist button { min-height: 20px; padding: 0 6px; font-size: 11px; }
+  @media (max-width: 700px) {
+    .lcols { grid-template-columns: 1fr; }
+    .lside { border-left: 0; padding-left: 0; border-top: 1px solid var(--lo); padding-top: 12px; }
+    .who #j_nick { flex: 1 1 100%; width: auto; }
+    .who .team { flex: 1 1 100%; } .who #j_team { flex: 1; width: auto; }
+  }
+  /* ---------- waiting room strip ---------- */
+  .rstrip { margin: 6px 4px 4px; padding: 10px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; }
+  .rstrip .rt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-width: 0; }
+  .rstrip .rname { font-weight: bold; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .codechip { font: bold 12px "Courier New", monospace !important; letter-spacing: .2em !important; padding: 2px 8px !important; min-height: 0 !important; border-style: dashed !important; cursor: pointer; }
+  .rstrip .ract { display: flex; gap: 6px; }
+  .rstrip .players, .rstrip .rfull { grid-column: 1 / -1; }
+  .players { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ptag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; min-height: 28px; border: 1px solid var(--lo); background: var(--field); font-size: 13px; max-width: 100%; }
+  .ptag .pn { font-weight: bold; opacity: .75; font-size: 11px; }
+  .ptag .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+  .ptag .crown { color: #a07800; }
+  .ptag .tm { font-size: 10px; font-weight: bold; padding: 0 4px; border: 1px solid #7a5a00; color: #7a5a00; }
+  .ptag.me { border-color: #000080; box-shadow: inset 0 0 0 1px #000080; cursor: pointer; }
+  .ptag.open { border-style: dashed; opacity: .55; }
+  .ptag .kick { min-height: 0; padding: 0 5px; font-size: 11px; line-height: 16px; margin-left: 2px; }
+  #teamForm { display: flex; gap: 6px; align-items: center; }
+  #teamForm input { width: 140px; }
+  .rfull .note { margin: 0; }
+  @media (max-width: 560px) { .rstrip { grid-template-columns: 1fr; } }
   details summary { cursor: pointer; }
 
   /* ---------- display mode switch ---------- */
@@ -363,14 +407,45 @@
   body.modern .status { background: #030812; border: 1px solid #0f6a80; color: #00e5ff; font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
   body.modern .stage-wrap { background: transparent; }
   body.modern canvas:focus-visible { outline: 1px solid rgba(255,61,242,.45); outline-offset: 2px; }
-  body.modern .pline, body.modern .nicklist, body.modern .roomlist, body.modern .winlist { background: #030812; border: 1px solid #0f4a5a; box-shadow: inset 0 0 12px rgba(0,229,255,.06); color: #cdefff; font-family: Rajdhani, sans-serif; font-size: 14px; }
-  body.modern .pline .sys { color: #00e5ff; }
-  body.modern .pline .act { color: #ff6ef5; }
-  body.modern .roomlist .room { border-bottom-color: #0c2a38; }
-  body.modern .roomlist .room .meta { color: #7fa6b4; }
   body.modern .invite { background: rgba(255,61,242,.08); border: 1px solid #ff3df2; box-shadow: 0 0 12px rgba(255,61,242,.3); }
-  body.modern .badge.pub { background: rgba(57,255,136,.12); border-color: #39ff88; color: #39ff88; }
-  body.modern .badge.priv { background: rgba(255,77,109,.12); border-color: #ff4d6d; color: #ff8fa3; }
+  body.modern .winlist { background: #030812; border: 1px solid #0f4a5a; box-shadow: inset 0 0 12px rgba(0,229,255,.06); color: #cdefff; font-family: Rajdhani, sans-serif; font-size: 14px; }
+  body.modern .invite { background: rgba(255,61,242,.08); border: 1px solid #ff3df2; box-shadow: 0 0 12px rgba(255,61,242,.3); }
+  body.modern .who .lbl { font-family: Orbitron, sans-serif; font-size: 11px; letter-spacing: .14em; color: #7fdfff; text-transform: uppercase; }
+  body.modern .who #j_nick { font-family: Orbitron, Rajdhani, sans-serif; font-size: 15px; letter-spacing: .06em; }
+  body.modern .who .team { color: #7fa6b4; }
+  body.modern .lh { font-family: Orbitron, sans-serif; font-size: 11px; letter-spacing: .14em; color: #ff6ef5; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,61,242,.6); }
+  body.modern .lh .n { color: #7fa6b4; text-shadow: none; }
+  body.modern .gcard { border: 1px solid rgba(24,228,255,.28); background: linear-gradient(90deg, rgba(24,228,255,.08), rgba(24,228,255,.015)); transition: border-color .12s, box-shadow .12s; }
+  body.modern .gcard:hover { border-color: #18e4ff; box-shadow: 0 0 14px rgba(24,228,255,.35); }
+  body.modern .gcard .gn { font-family: Rajdhani, sans-serif; font-size: 17px; color: #fff; letter-spacing: .02em; }
+  body.modern .gcard .gs { color: #7fa6b4; font-size: 13px; opacity: 1; }
+  body.modern .pips i { border-color: rgba(24,228,255,.5); }
+  body.modern .pips i.on { background: #18e4ff; border-color: #7ff3ff; box-shadow: 0 0 6px #18e4ff; }
+  body.modern .chip { font-family: Orbitron, sans-serif; font-size: 9px; letter-spacing: .12em; padding: 1px 6px; background: transparent; }
+  body.modern .chip.wait, body.modern .chip.pub { color: #39ff88; border-color: #39ff88; box-shadow: 0 0 6px rgba(57,255,136,.35); }
+  body.modern .chip.play { color: #ffd31a; border-color: #ffd31a; }
+  body.modern .chip.priv { color: #ff8fa3; border-color: #ff4d6d; box-shadow: 0 0 6px rgba(255,77,109,.35); }
+  body.modern .empty { border: 1px dashed rgba(24,228,255,.3); background: transparent; color: #9fb8c8; }
+  body.modern .empty b { color: #fff; font-family: Orbitron, sans-serif; font-size: 12px; letter-spacing: .1em; }
+  body.modern .lside { border-left-color: rgba(24,228,255,.18); }
+  body.modern .hint { color: #7fa6b4; opacity: 1; font-size: 12px; }
+  body.modern .codein { font-family: Orbitron, monospace; font-size: 17px; }
+  body.modern button.newbtn { --br: #ffb3fb; border-color: #ff3df2; color: #ffd0fb; text-shadow: 0 0 8px rgba(255,61,242,.9); font-family: Orbitron, Rajdhani, sans-serif; letter-spacing: .12em;
+    background-image: linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(180deg, rgba(255,61,242,.22), rgba(255,61,242,.05) 55%, rgba(255,61,242,.12));
+    box-shadow: 0 0 12px rgba(255,61,242,.35); }
+  body.modern button.newbtn:hover:not(:disabled) { box-shadow: 0 0 18px rgba(255,61,242,.7); color: #fff; }
+  body.modern .create { border: 1px solid #ff3df2; box-shadow: 0 0 14px rgba(255,61,242,.25), inset 0 0 20px rgba(255,61,242,.05); }
+  body.modern .seg2 button[aria-pressed="true"] { background-color: rgba(0,229,255,.22); color: #fff; box-shadow: 0 0 10px rgba(0,229,255,.5); border-color: #00e5ff; }
+  body.modern .linkbtn { color: #7fdfff !important; text-shadow: none; font-family: Rajdhani, sans-serif !important; font-weight: 600; }
+  body.modern .lfoot { border-top-color: rgba(24,228,255,.2); color: #7fa6b4; font-size: 13px; }
+  body.modern .rstrip .rname { font-family: Orbitron, sans-serif; color: #fff; letter-spacing: .06em; font-size: 15px; }
+  body.modern .codechip { font-family: Orbitron, monospace !important; color: #18e4ff !important; border-color: #18e4ff !important; background: transparent !important; text-shadow: 0 0 6px rgba(24,228,255,.6); }
+  body.modern .ptag { border-color: rgba(24,228,255,.35); background: rgba(24,228,255,.05); color: #d9fbff; font-size: 14px; }
+  body.modern .ptag .pn { font-family: Orbitron, sans-serif; color: #18e4ff; opacity: 1; }
+  body.modern .ptag .crown { color: #ffd31a; text-shadow: 0 0 6px rgba(255,211,26,.6); }
+  body.modern .ptag .tm { color: #ffd31a; border-color: rgba(255,211,26,.5); }
+  body.modern .ptag.me { border-color: #18e4ff; box-shadow: 0 0 8px rgba(24,228,255,.4); }
+  body.modern .ptag.open { color: #4d7080; border-color: rgba(24,228,255,.25); opacity: 1; }
   body.modern .pieceicon i.on { background: #00e5ff; box-shadow: 0 0 4px #00e5ff; }
   body.modern .spinfo { background: #040a16; border: 1px solid #00e5ff; box-shadow: 0 0 14px rgba(0,229,255,.25), inset 0 0 18px rgba(0,229,255,.06); color: #d6fbff; font-family: Rajdhani, sans-serif; font-size: 14px; }
   body.modern .sp-title { font-family: Orbitron, Rajdhani, sans-serif; font-size: 13px; letter-spacing: .06em; color: #fff; }
@@ -409,13 +484,13 @@
     <div class="titlebar"><span class="grow" id="onlineTitle">TetriNET — Online</span><button type="button" class="collapse" id="btnCopyMini" hidden>Copy Invite Link</button><button type="button" class="collapse" data-collapse aria-expanded="true" aria-controls="onlineBody" title="Hide">Hide ▴</button></div>
     <div id="onlineBody">
 
-    <!-- landing page -->
-    <div id="landing" class="panel" style="margin:6px 4px 4px">
-      <div class="joinrow">
-        <label for="j_nick">Your Nickname:</label><input id="j_nick" type="text" maxlength="30" style="width:150px" autocomplete="nickname">
-        <label for="j_team">Team (Blank For None):</label><input id="j_team" type="text" maxlength="30" style="width:110px">
+    <!-- landing page (lobby) -->
+    <div id="landing" class="lob">
+      <div class="who">
+        <label class="lbl" for="j_nick">Callsign</label><input id="j_nick" type="text" maxlength="30" autocomplete="nickname" placeholder="Your name">
+        <span class="team"><label for="j_team">Team</label><input id="j_team" type="text" maxlength="30" placeholder="optional"></span>
       </div>
-      <p id="netStatus" class="note" style="margin:8px 0 0" role="status">Connecting to the server…</p>
+      <p id="netStatus" class="note" style="margin:6px 0 0" role="status">Connecting to the server…</p>
 
       <div id="invite" class="invite" hidden>
         <div id="inviteText"></div>
@@ -426,68 +501,55 @@
         </form>
       </div>
 
-      <div class="landing-grid">
-        <fieldset>
-          <legend>Start a New Game</legend>
-          <form id="createForm" autocomplete="off">
-            <div class="row"><label for="c_name">Game Name:</label><input id="c_name" type="text" maxlength="40" style="width:170px" placeholder="Your nickname's game"></div>
-            <div class="row" role="radiogroup" aria-label="Who can join">
-              <label style="flex:none"><input type="radio" name="c_vis" id="c_public" value="public" checked> Public</label>
-              <label style="flex:none"><input type="radio" name="c_vis" id="c_private" value="private"> Private</label>
-            </div>
-            <div class="row" id="c_pwRow" hidden><label for="c_pw">Password:</label><input id="c_pw" type="password" maxlength="40" style="width:170px"></div>
-            <p class="note" id="c_hint" style="margin:4px 0 8px;font-size:11px">Public games are listed for everyone. You can also invite people with a link.</p>
-            <button id="btnCreate" type="submit">Create Game</button>
-          </form>
-        </fieldset>
-        <fieldset>
-          <legend>Public Games</legend>
-          <div class="roomlist" id="roomList"><span class="note">Loading…</span></div>
-        </fieldset>
-        <fieldset>
-          <legend>Join With a Code</legend>
+      <div class="lcols" id="lobCols">
+        <div>
+          <div class="lh">Open Games <span class="n" id="roomCount"></span></div>
+          <div class="cards" id="roomList"><div class="empty">Loading…</div></div>
+        </div>
+        <div class="lside">
+          <button id="btnNew" type="button" class="newbtn">+ New Game</button>
+          <p class="hint">Public or private, you pick. You get an invite link to send friends.</p>
           <form id="codeForm" autocomplete="off">
-            <div class="row"><label for="j_code">Game Code:</label><input id="j_code" type="text" maxlength="6" style="width:90px;text-transform:uppercase" spellcheck="false"></div>
-            <div class="row"><label for="j_pw">Password (private games):</label><input id="j_pw" type="password" maxlength="40" style="width:120px"></div>
-            <button type="submit">Join</button>
+            <label class="lh" for="j_code" style="margin:0">Got a code?</label>
+            <input id="j_code" class="codein" type="text" maxlength="6" placeholder="ABC123" spellcheck="false" autocapitalize="characters" autocomplete="off">
+            <input id="j_pw" type="password" maxlength="40" placeholder="Password" hidden aria-label="Password">
+            <button type="submit" class="wide">Join</button>
+            <p class="hint" id="codeHint" style="margin:0">A password box appears only if the game is private.</p>
           </form>
-        </fieldset>
+        </div>
       </div>
-      <p class="note" style="margin:8px 0 0;font-size:11px">No one to play with? Press <b>Start New Game</b> in the Playing Fields window below to practise offline against the computer.</p>
-      <details style="margin-top:6px"><summary>Server address</summary>
-        <div class="row" style="margin-top:6px"><label for="j_server">Server:</label><input id="j_server" type="text" style="width:260px" spellcheck="false"><button id="btnReconnect" type="button">Connect</button></div>
-      </details>
+
+      <form id="createForm" class="create" autocomplete="off" hidden>
+        <div class="lh">New Game <button type="button" class="linkbtn" id="btnCancelNew">✕ Cancel</button></div>
+        <div class="crow">
+          <input id="c_name" type="text" maxlength="40" placeholder="Game name" aria-label="Game name">
+          <span class="seg2" role="group" aria-label="Who can join"><button type="button" id="c_public" aria-pressed="true">Public</button><button type="button" id="c_private" aria-pressed="false">Private</button></span>
+        </div>
+        <div class="crow">
+          <input id="c_pw" type="password" maxlength="40" placeholder="Password for your friends" aria-label="Password" hidden>
+          <span id="c_spacer" style="flex:1"></span>
+          <button id="btnCreate" type="submit" class="newbtn">Create</button>
+        </div>
+        <p class="hint" id="c_hint" style="margin:0">Public games are listed for everyone. You also get an invite link.</p>
+      </form>
+
+      <div class="lfoot">
+        <span>No one around? <button type="button" class="linkbtn" id="btnPractice">Practice against bots</button></span>
+        <button type="button" class="linkbtn" id="btnServer" aria-expanded="false">Server</button>
+      </div>
+      <div class="joinrow" id="serverRow" style="margin-top:8px" hidden><label for="j_server">Server:</label><input id="j_server" type="text" style="flex:1;min-width:160px" spellcheck="false"><button id="btnReconnect" type="button">Connect</button></div>
     </div>
 
-    <!-- inside a game -->
-    <div id="roomView" class="panel" style="margin:6px 4px 4px" hidden>
-      <div class="roombar">
-        <span class="badge" id="roomBadge">Public</span>
-        <b id="roomName"></b>
-        <span class="note">Code <kbd id="roomCode"></kbd></span>
-        <span class="grow"></span>
-        <button id="btnCopy" type="button">Copy Invite Link</button>
-        <button id="btnLeave" type="button">Leave Game</button>
-      </div>
-      <div id="copyFallback" class="row" hidden><label for="copyLink">Copy this link:</label><input id="copyLink" type="text" readonly style="flex:2"></div>
-      <p id="roomStatus" class="note" style="margin:8px 0 0" role="status"></p>
-      <div class="lobby">
-        <div class="pl-wrap">
-          <div id="pline" class="pline" aria-live="polite"></div>
-          <form id="plineForm" autocomplete="off" style="display:flex;gap:6px;margin-top:6px">
-            <input id="plineIn" type="text" maxlength="300" enterkeyhint="send" placeholder="Talk on the partyline (/me for actions)" style="flex:1" aria-label="Partyline message">
-            <button type="submit">Send</button>
-          </form>
-        </div>
-        <div>
-          <div class="nicklist" id="nicklist"></div>
-          <form id="teamForm" class="row" autocomplete="off" style="margin-top:6px">
-            <label for="r_team" style="flex:none">Team:</label><input id="r_team" type="text" maxlength="30" style="flex:1;min-width:0">
-            <button type="submit">Update Team</button>
-          </form>
-          <p class="note" style="margin:6px 0 0;font-size:11px">* is the moderator: the first player in. Only the moderator can start, pause and stop games, and their Server Settings and Block Occurancy are used.</p>
-        </div>
-      </div>
+    <!-- in a game room: compact strip -->
+    <div id="roomView" class="rstrip" hidden>
+      <div class="rt"><span class="rname" id="roomName"></span><span class="chip" id="roomBadge">Public</span><button type="button" class="codechip" id="roomCode" title="Copy invite link"></button></div>
+      <div class="ract"><button id="btnCopy" type="button">Copy Invite Link</button><button id="btnLeave" type="button">Leave</button></div>
+      <div class="rfull joinrow" id="copyFallback" hidden><label for="copyLink">Copy this link:</label><input id="copyLink" type="text" readonly style="flex:1;min-width:0"></div>
+      <div class="players" id="nicklist"></div>
+      <form id="teamForm" class="rfull" autocomplete="off" hidden>
+        <label for="r_team">Your team:</label><input id="r_team" type="text" maxlength="30" placeholder="blank for none"><button type="submit">Save</button><button type="button" id="teamCancel">Cancel</button>
+      </form>
+      <div class="rfull"><p id="roomStatus" class="note" role="status"></p></div>
     </div>
     </div>
   </section>
@@ -1250,6 +1312,7 @@ function endGame(winner) {
   }
   G.dirty = true;
   updateButtons();
+  focusChatIfWaiting();                             // back in the waiting room
 }
 
 /* ---------- "lines added after N minutes" (GameEndTimer 0x44f4c8) ---------- */
@@ -2665,6 +2728,14 @@ function updateMobileBar() {
 // chat ('T')
 const chat = document.getElementById('chat');
 function openChat() { softDropUp(ME()); chat.focus(); }
+// In a room between games (computer only: a phone would pop up its keyboard), put the cursor in the
+// message box, unless you're already typing somewhere else.
+function focusChatIfWaiting() {
+  if (!NET.online || G.running || MOBILE.on || chat.offsetParent === null) return;
+  const a = document.activeElement;
+  if (a && a !== chat && (a.tagName === 'INPUT' || a.tagName === 'SELECT' || a.tagName === 'TEXTAREA')) return;
+  chat.focus({ preventScroll: true });
+}
 // Esc in the message box: back to the game without sending
 chat.addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.preventDefault(); chat.value = ''; if (G.running && !MOBILE.on) { stage.focus({ preventScroll: true }); fieldsActive = true; } else chat.blur(); }
@@ -2680,7 +2751,8 @@ document.getElementById('chatForm').addEventListener('submit', e => {
     else { addMsg(act ? '* ' + me.name + ' ' + body : '<' + me.name + '> ' + t); sfx(me, 9); }
   }
   chat.value = '';
-  if (G.running && !MOBILE.on) stage.focus(); else chat.blur();
+  if (G.running && !MOBILE.on) stage.focus();
+  else if (MOBILE.on || !NET.online) chat.blur();     // waiting room on a computer: stay in the box for the next message
 });
 chat.addEventListener('keydown', e => {
   if (e.key === 'Escape') { stage.focus(); e.preventDefault(); }
@@ -2922,29 +2994,41 @@ function showView(inRoom) {
   $('landing').hidden = inRoom; $('roomView').hidden = !inRoom;
   updateOnlineTitle();
 }
-function plineAdd(html, cls) {
-  const box = $('pline'), d = document.createElement('div');
-  if (cls) d.className = cls;
-  d.innerHTML = html;
-  box.appendChild(d);
-  while (box.children.length > 300) box.removeChild(box.firstChild);
-  box.scrollTop = box.scrollHeight;
-}
 function renderNicklist() {
-  const rows = [];
-  for (let s = 1; s <= 6; s++) if (NET.names[s]) {
-    const kick = NET.mod === NET.slot && s !== NET.slot ? '<button type="button" data-kick="' + s + '">Kick</button>' : '';
-    rows.push('<div class="nick"><span>' + (NET.mod === s ? '*' : '') + s + '. ' + esc(NET.names[s]) + (NET.teams[s] ? ' <i>(' + esc(NET.teams[s]) + ')</i>' : '') + (s === NET.slot ? ' — you' : '') + '</span>' + kick + '</div>');
+  const tags = [], mod = NET.mod === NET.slot;
+  for (let n = 1; n <= 6; n++) {
+    if (!NET.names[n]) { tags.push('<span class="ptag open"><span class="pn">' + n + '</span>open</span>'); continue; }
+    const me = n === NET.slot;
+    tags.push('<span class="ptag' + (me ? ' me' : '') + '"' + (me ? ' role="button" tabindex="0" data-me="1" title="Change your team"' : '') + '>' +
+      (NET.mod === n ? '<span class="crown" title="Moderator">♛</span>' : '') + '<span class="pn">' + n + '</span><span class="nm">' + esc(NET.names[n]) + (me ? ' (you)' : '') + '</span>' +
+      (NET.teams[n] ? '<span class="tm">' + esc(NET.teams[n]) + '</span>' : '') +
+      (mod && !me ? '<button type="button" class="kick" data-kick="' + n + '" title="Kick ' + esc(NET.names[n]) + '" aria-label="Kick ' + esc(NET.names[n]) + '">✕</button>' : '') + '</span>');
   }
-  $('nicklist').innerHTML = rows.join('') || '<span class="note">Nobody here yet.</span>';
+  $('nicklist').innerHTML = tags.join('');
+}
+function updateRoomStatus() {
+  if (!NET.online) return;
+  const modName = NET.names[NET.mod] || 'the moderator';
+  roomStatus(G.running ? 'Game in progress.' + (ME().present ? '' : ' You play in the next one.')
+    : NET.mod === NET.slot ? 'You’re the moderator (♛): set the rules in Settings, then press Start New Game. Chat in the Messages box, just start typing.'
+    : 'Waiting for ' + modName + ' to start the game. Chat in the Messages box, just start typing.');
 }
 function renderRooms(list) {
   const el = $('roomList');
-  if (!list.length) { el.innerHTML = '<span class="note">No public games right now. Start one on the left.</span>'; return; }
-  el.innerHTML = list.map(r =>
-    '<div class="room"><span class="rn" title="' + esc(r.name) + '">' + esc(r.name) + '</span>' +
-    '<button type="button" data-join="' + r.id + '"' + (r.players >= r.max ? ' disabled' : '') + '>' + (r.players >= r.max ? 'Full' : 'Join') + '</button>' +
-    '<span class="meta">' + r.players + '/' + r.max + ' players · ' + (r.running ? 'game in progress' : 'waiting') + (r.host ? ' · host ' + esc(r.host) : '') + '</span></div>').join('');
+  $('roomCount').textContent = list.length ? list.length + ' open' : '';
+  if (!list.length) { el.innerHTML = '<div class="empty"><b>No open games right now</b>Start one with + New Game, or practice against bots.</div>'; return; }
+  el.innerHTML = list.map(r => {
+    const full = r.players >= r.max;
+    let pips = '';
+    for (let i = 0; i < r.max; i++) pips += '<i' + (i < r.players ? ' class="on"' : '') + '></i>';
+    const label = full ? 'Full' : r.running ? 'Watch' : 'Join';
+    return '<div class="gcard" data-join="' + r.id + '"' + (full ? ' aria-disabled="true"' : '') + ' title="' + esc(r.name) + '">' +
+      '<span class="gn">' + esc(r.name) + '</span>' +
+      '<button type="button" data-join="' + r.id + '"' + (full ? ' disabled' : '') + (r.running && !full ? ' title="Watch now, play in the next round"' : '') + '>' + label + '</button>' +
+      '<span class="gs"><span class="pips" aria-label="' + r.players + ' of ' + r.max + ' players">' + pips + '</span>' +
+      '<span class="chip ' + (r.running ? 'play' : 'wait') + '">' + (r.running ? 'In game' : 'Waiting') + '</span>' +
+      (r.host ? '<span>host ' + esc(r.host) + '</span>' : '') + '</span></div>';
+  }).join('');
 }
 function readIdentity() {
   const nick = $('j_nick').value.trim(), team = $('j_team').value.trim();
@@ -2957,7 +3041,7 @@ function joinRoom(id, password) {
   const who = readIdentity(); if (!who) return;
   if (!NET.ws || NET.ws.readyState !== 1) { netStatus('Not connected to the server yet. Please wait a moment.', true); return; }
   if (G.running) endGame(0);
-  NET.wanted = id;
+  NET.wanted = id; NET.sentPw = password || '';
   netStatus('Joining game ' + id + '…');
   netSend({ t: 'join', room: id, name: who.name, team: who.team, password: password || '' });
 }
@@ -2973,7 +3057,7 @@ function netConnect() {
   if (!NET.retry) netStatus('Connecting to the server… (a free server that has been asleep can take up to a minute to wake up)');
   ws.onopen = () => {
     NET.retry = 0;
-    netStatus('Connected. Create a game, or join one below.');
+    netStatus('Connected. Pick a game, start your own, or enter a code.');
     netSend({ t: 'list' });
     const id = (QS.get('room') || '').toUpperCase();
     if (id && !NET.invite) netSend({ t: 'info', room: id });
@@ -3030,7 +3114,15 @@ function netHandle(m) {
     case 'error':
       if (NET.online) roomStatus(m.text);
       else netStatus(m.text, true);
-      if (m.code === 'password') { const f = !$('invite').hidden && NET.invite && NET.invite.id === NET.wanted ? $('invitePw') : $('j_pw'); f.value = ''; f.focus(); }
+      if (m.code === 'password') {
+        const inv = !$('invite').hidden && NET.invite && NET.invite.id === NET.wanted;
+        if (!inv) {                                   // joined by code or from the list: ask for the password now
+          if ($('j_code').value.trim().toUpperCase() !== NET.wanted) $('j_code').value = NET.wanted || '';
+          $('j_pw').hidden = false; $('codeHint').textContent = 'This game is private. Enter its password.';
+        }
+        if (!NET.sentPw) netStatus('This game is private. Enter its password to join.', true);
+        const f = inv ? $('invitePw') : $('j_pw'); f.value = ''; f.focus();
+      }
       break;
     case 'welcome': {
       NET.online = true; NET.slot = m.slot; G.me = m.slot; NET.room = m.room;
@@ -3038,11 +3130,12 @@ function netHandle(m) {
       G.running = false; G.winner = 0; G.attacks = []; G.msgs = [];
       WINLIST = m.winlist || []; renderWinlist();
       $('invite').hidden = true; NET.invite = null;
-      $('pline').innerHTML = '';
       $('roomName').textContent = m.room.name;
-      $('roomCode').textContent = m.room.id;
-      const bd = $('roomBadge'); bd.textContent = m.room.private ? 'Private' : 'Public'; bd.className = 'badge ' + (m.room.private ? 'priv' : 'pub');
-      $('r_team').value = S.team;
+      $('roomCode').textContent = m.room.id + ' ⧉';
+      $('roomCode').title = 'Copy invite link (code ' + m.room.id + ')';
+      const bd = $('roomBadge'); bd.textContent = m.room.private ? 'Private' : 'Public'; bd.className = 'chip ' + (m.room.private ? 'priv' : 'pub');
+      $('r_team').value = S.team; $('teamForm').hidden = true;
+      $('j_pw').hidden = true; $('j_pw').value = ''; $('codeHint').textContent = 'A password box appears only if the game is private.'; showCreate(false);
       $('copyFallback').hidden = true;
       setUrlRoom(m.room.id);
       showView(true);
@@ -3051,6 +3144,7 @@ function netHandle(m) {
       addMsg('*** You are in ' + m.room.name + '.');
       setCollapsed(onlineWin(), true);
       G.dirty = true; updateButtons();
+      requestAnimationFrame(focusChatIfWaiting);       // waiting room: all you can do is talk
       break;
     }
     case 'left':
@@ -3065,15 +3159,18 @@ function netHandle(m) {
       NET.names = {}; NET.teams = {};
       for (const pl of m.players) { NET.names[pl.slot] = pl.name; NET.teams[pl.slot] = pl.team; }
       NET.mod = m.mod;
-      renderNicklist(); updateButtons(); updateOnlineTitle(); G.dirty = true;
-      roomStatus('You are player ' + NET.slot + (NET.mod === NET.slot
-        ? '. You are the moderator: set up the rules in the settings below and press Start New Game. Use Copy Invite Link to bring friends in.'
-        : '. Waiting for ' + (NET.names[NET.mod] || 'the moderator') + ' to start the game.'));
+      renderNicklist(); updateButtons(); updateOnlineTitle(); updateRoomStatus(); G.dirty = true;
       break;
-    case 'pline': {
-      if (!m.from) plineAdd(esc(m.text), 'sys');
-      else if (m.act) plineAdd('* ' + esc(NET.names[m.from] || '?') + ' ' + esc(m.text), 'act');
-      else plineAdd('&lt;<b>' + esc(NET.names[m.from] || '?') + '</b>&gt; ' + esc(m.text));
+    case 'pline': {                                // one chat: room announcements and talk all go to the Messages box
+      if (!m.from) {
+        // this client already writes these itself when the game starts / ends
+        if (/^\*\*\* The Game Has (Started|Ended)$/.test(m.text)) break;
+        addMsg(m.text);
+      } else {
+        const nm = NET.names[m.from] || '?';
+        addMsg(m.act ? '* ' + nm + ' ' + m.text : '<' + nm + '> ' + m.text);
+        if (m.from !== NET.slot) sfx(ME(), 9, true);
+      }
       break;
     }
     case 'gmsg': {
@@ -3086,6 +3183,7 @@ function netHandle(m) {
       G.attacks = [];
       beginGame(m.cfg, m.roster);
       if (!ME().present) addMsg('*** You joined after this game started. You will play in the next one.');
+      updateRoomStatus();
       break;
     case 'f': {
       const p = G.players[m.from];
@@ -3111,6 +3209,7 @@ function netHandle(m) {
         if (m.winner && me.present && (m.winner === G.me || (G.players[m.winner] && sameTeam(G.players[m.winner], me)))) sfx(me, 7, true);
         endGame(m.winner | 0);
       }
+      updateRoomStatus();
       break;
     }
     case 'playerleave': {
@@ -3169,6 +3268,7 @@ async function copyInvite() {
     await navigator.clipboard.writeText(url);
     btn.textContent = 'Link Copied!';
     setTimeout(() => { btn.textContent = 'Copy Invite Link'; }, 2000);
+    const cc = $('roomCode'); cc.textContent = 'COPIED ✓'; setTimeout(() => { if (NET.room) cc.textContent = NET.room.id + ' ⧉'; }, 1600);
     $('copyFallback').hidden = true;
   } catch (e) {
     $('copyFallback').hidden = false;
@@ -3181,39 +3281,78 @@ async function copyInvite() {
 $('j_server').value = defaultServer();
 $('j_nick').value = S.nick === 'Player' ? '' : S.nick;
 $('j_team').value = S.team;
-const syncVis = () => { const priv = $('c_private').checked; $('c_pwRow').hidden = !priv; $('c_hint').textContent = priv ? 'Private games are not listed. Share the invite link and the password with your friends.' : 'Public games are listed for everyone. You can also invite people with a link.'; };
-$('c_public').addEventListener('change', syncVis); $('c_private').addEventListener('change', syncVis);
+let createPriv = false;
+function setVis(priv) {
+  createPriv = priv;
+  $('c_public').setAttribute('aria-pressed', String(!priv)); $('c_private').setAttribute('aria-pressed', String(priv));
+  $('c_pw').hidden = !priv; $('c_spacer').hidden = priv;
+  $('c_hint').textContent = priv ? 'Private games aren’t listed. Share the invite link (and the password) with your friends.' : 'Public games are listed for everyone. You also get an invite link.';
+  if (priv) $('c_pw').focus();
+}
+function showCreate(on) {
+  $('createForm').hidden = !on; $('lobCols').hidden = on;
+  if (on) {
+    if (!$('c_name').value.trim()) $('c_name').value = ($('j_nick').value.trim() || 'My') + '’s game';
+    $('c_name').focus(); $('c_name').select();
+  }
+}
+$('btnNew').addEventListener('click', () => showCreate(true));
+$('btnCancelNew').addEventListener('click', () => showCreate(false));
+$('c_public').addEventListener('click', () => setVis(false));
+$('c_private').addEventListener('click', () => setVis(true));
 $('createForm').addEventListener('submit', e => {
   e.preventDefault();
   const who = readIdentity(); if (!who) return;
-  const priv = $('c_private').checked, pw = $('c_pw').value;
+  const priv = createPriv, pw = $('c_pw').value;
   if (priv && !pw) { netStatus('Choose a password for your private game.', true); $('c_pw').focus(); return; }
   if (!NET.ws || NET.ws.readyState !== 1) { netStatus('Not connected to the server yet. Please wait a moment.', true); return; }
   if (G.running) endGame(0);
   netSend({ t: 'create', name: who.name, team: who.team, roomName: $('c_name').value.trim(), private: priv, password: pw });
 });
-$('roomList').addEventListener('click', e => { const b = e.target.closest('button[data-join]'); if (b) joinRoom(b.dataset.join, ''); });
+$('roomList').addEventListener('click', e => {
+  const c = e.target.closest('[data-join]');
+  if (!c || c.disabled || c.getAttribute('aria-disabled') === 'true') return;
+  joinRoom(c.dataset.join, '');
+});
+$('j_code').addEventListener('input', () => {             // a different code: hide the password box again
+  const v = $('j_code').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (v !== $('j_code').value) $('j_code').value = v;
+  if (!$('j_pw').hidden && v !== NET.wanted) { $('j_pw').hidden = true; $('j_pw').value = ''; $('codeHint').textContent = 'A password box appears only if the game is private.'; }
+});
 $('codeForm').addEventListener('submit', e => {
   e.preventDefault();
   const code = $('j_code').value.trim().toUpperCase();
   if (!/^[A-Z0-9]{6}$/.test(code)) { netStatus('Game codes are 6 letters and numbers.', true); $('j_code').focus(); return; }
-  joinRoom(code, $('j_pw').value);
+  joinRoom(code, $('j_pw').hidden ? '' : $('j_pw').value);
 });
+$('btnPractice').addEventListener('click', () => {
+  const nick = $('j_nick').value.trim();
+  if (nick) { S.nick = nick; S.team = $('j_team').value.trim(); saveSettings(); writeForm(); }
+  startGame();
+  if (!MOBILE.on) { const sec = stage.closest('section'); sec.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+});
+$('btnServer').addEventListener('click', () => { const r = $('serverRow'); r.hidden = !r.hidden; $('btnServer').setAttribute('aria-expanded', String(!r.hidden)); if (!r.hidden) $('j_server').focus(); });
 $('inviteForm').addEventListener('submit', e => { e.preventDefault(); if (NET.invite && NET.invite.exists) joinRoom(NET.invite.id, $('invitePw').value); });
 $('inviteDismiss').addEventListener('click', () => { $('invite').hidden = true; setUrlRoom(null); });
 $('btnLeave').addEventListener('click', () => netSend({ t: 'leave' }));
 $('btnCopy').addEventListener('click', copyInvite);
+$('roomCode').addEventListener('click', copyInvite);
 $('btnReconnect').addEventListener('click', () => { NET.retry = 0; netConnect(); });
-$('teamForm').addEventListener('submit', e => { e.preventDefault(); const t = $('r_team').value.trim(); S.team = t; $('j_team').value = t; saveSettings(); writeForm(); netSend({ t: 'team', team: t }); });
-$('plineForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const t = $('plineIn').value.trim();
-  if (!t) return;
-  if (/^\/me\s+/i.test(t)) netSend({ t: 'pline', text: t.replace(/^\/me\s+/i, ''), act: true });
-  else netSend({ t: 'pline', text: t });
-  $('plineIn').value = '';
+function openTeamForm() { $('teamForm').hidden = false; $('r_team').value = S.team; $('r_team').focus(); $('r_team').select(); }
+$('nicklist').addEventListener('click', e => {
+  const k = e.target.closest('button[data-kick]');
+  if (k) { netSend({ t: 'kick', slot: parseInt(k.dataset.kick, 10) }); return; }
+  if (e.target.closest('[data-me]')) openTeamForm();
 });
-$('nicklist').addEventListener('click', e => { const b = e.target.closest('button[data-kick]'); if (b) netSend({ t: 'kick', slot: parseInt(b.dataset.kick, 10) }); });
+$('nicklist').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-me]')) { e.preventDefault(); openTeamForm(); } });
+$('teamForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('r_team').value.trim(); S.team = t; $('j_team').value = t; saveSettings(); writeForm();
+  netSend({ t: 'team', team: t });
+  $('teamForm').hidden = true; focusChatIfWaiting();
+});
+$('teamCancel').addEventListener('click', () => { $('teamForm').hidden = true; focusChatIfWaiting(); });
+$('r_team').addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); $('teamForm').hidden = true; focusChatIfWaiting(); } });
 if (location.protocol === 'http:' || location.protocol === 'https:') netConnect();
 else netStatus('Online play needs the hosted server. You can still practise offline below.', true);
 

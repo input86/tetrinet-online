@@ -3,10 +3,17 @@
 A new web port of TetriNET, the multiplayer game created by St0rmCat in 1997, with a small game server.
 The original game, its design and its name belong to its creator; this port is independent and not endorsed by St0rmCat.
 
-- Open the page, type a nickname and **Create Game**: choose **Public** (listed on the landing
-  page for anyone to join) or **Private** (needs a password you choose).
-- Others join from the **Public Games** list, with the 6-character **game code**, or from an
-  invite link (**Copy Invite Link** inside a game). Private games also ask for the password.
+- Open the page and type your **Callsign** (nickname). **Open Games** lists the public games:
+  how full each is, whether it's waiting or already playing (join to watch, then play the next
+  round), and who hosts it. Press **Join** on one.
+- **+ New Game** starts your own: give it a name and choose **Public** (listed for everyone) or
+  **Private** (needs a password you choose, and isn't listed).
+- **Got a code?** Type the 6-character game code. A password box appears only if that game is
+  private. Invite links (**Copy Invite Link**, or tap the code in the room) open straight to the game.
+- **Practice against bots** plays offline against computer opponents.
+- In a room, the top strip shows every player (♛ is the moderator, your own tag changes your team;
+  the moderator can remove players with ✕). There is one chat, the **Messages** box, used the
+  same way while waiting and during games; while waiting, you can just start typing.
 - Up to 6 players per game. The first player in is the moderator (marked `*`): they set the
   rules and press **Start New Game**. If they leave, the next player takes over.
 - Empty games are removed after 2 minutes.
