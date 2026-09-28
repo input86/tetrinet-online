@@ -2301,8 +2301,12 @@ stage.addEventListener('pointerdown', () => { if (!MOBILE.on) stage.focus(); ens
 document.addEventListener('pointerdown', e => { ensureAudio(); if (e.target !== stage && !e.target.closest('#fieldsWin .mctl-l, #fieldsWin .mctl-r, #fieldsWin .mctl-sp')) fieldsActive = false; });
 window.addEventListener('keydown', e => {
   if (inTextField(e)) return;
-  if (!fieldsActive && document.activeElement !== stage) return;
+  if (e.ctrlKey && !/control/i.test(S.keys.join(' ')) || e.metaKey || e.altKey) return;   // leave browser shortcuts alone
   const me = ME();
+  // While you're playing, the game keys (and T to talk) work wherever you last clicked on the page,
+  // except while typing in a text box. Otherwise only when the playing fields were clicked last.
+  const playing = G.running && me.present && !MOBILE.play;
+  if (!playing && !fieldsActive && document.activeElement !== stage) return;
   const k = normKey(e.key);
   const keys = S.keys.map(normKey);
   let handled = false;
@@ -2317,6 +2321,8 @@ window.addEventListener('keydown', e => {
   else if (k === 'd') { discard(me); handled = true; }
   else if (/^[1-6]$/.test(k)) { useSpecial(me, parseInt(k, 10)); handled = true; }
   if (handled || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
+  // a game key pressed while a button had focus: move focus to the fields so Space/Enter can't also press that button
+  if (handled && k !== 't' && document.activeElement !== stage && !MOBILE.on) { stage.focus({ preventScroll: true }); fieldsActive = true; }
 });
 window.addEventListener('keyup', e => {
   if (normKey(e.key) === normKey(S.keys[2])) softDropUp(ME());
@@ -2651,7 +2657,11 @@ function updateMobileBar() {
 
 // chat ('T')
 const chat = document.getElementById('chat');
-function openChat() { chat.focus(); }
+function openChat() { softDropUp(ME()); chat.focus(); }
+// Esc in the message box: back to the game without sending
+chat.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); chat.value = ''; if (G.running && !MOBILE.on) { stage.focus({ preventScroll: true }); fieldsActive = true; } else chat.blur(); }
+});
 // Sent through a form so phone keyboards show a Send key (a lone input shows "Next")
 document.getElementById('chatForm').addEventListener('submit', e => {
   e.preventDefault();
