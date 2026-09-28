@@ -146,8 +146,20 @@
     grid-template-rows: minmax(0, 1fr) auto;
     grid-template-areas: "bar stage sp" "left stage right";
   }
-  body.playmode.landscape .mbar { flex-wrap: wrap; align-content: flex-start; align-self: start; }
-  body.playmode.landscape .mbar .mstatus { flex: 1 1 100%; white-space: normal; font-size: 12px; }
+  .mbtns { display: flex; gap: 6px; align-items: center; }
+  .mspdesc { display: none; }
+  body.playmode.landscape .mbar { flex-direction: column; align-items: stretch; align-self: stretch; min-height: 0; overflow: hidden; }
+  body.playmode.landscape .mbar .mstatus { flex: none; white-space: nowrap; font-size: 11px; }
+  body.playmode.landscape .mbtns { gap: 5px; }
+  body.playmode.landscape .mbar button { min-height: 30px; padding: 2px 8px; font-size: 13px; }
+  body.playmode.landscape .mbtns { flex: none; flex-wrap: wrap; row-gap: 5px; }
+  /* next special block, always explained under the Menu button (phones/tablets held sideways) */
+  body.playmode.landscape .mspdesc { display: block; flex: 0 1 auto; min-height: 0; overflow-y: auto; margin-top: 2px; padding: 4px 6px; background: #ffffe1; color: #000; border: 1px solid; border-color: var(--lo) var(--hi) var(--hi) var(--lo); font: 11px/1.25 Arial, sans-serif; overflow-wrap: anywhere; }
+  body.playmode.landscape .mspdesc .sp-title { font-size: 11px; gap: 2px 5px; }
+  body.playmode.landscape .mspdesc .sp-kind { font-size: 9px; padding: 0 3px; }
+  body.playmode.landscape .mspdesc .sp-desc, body.playmode.landscape .mspdesc .sp-ctx { margin-top: 2px; }
+  body.modern.playmode.landscape .mspdesc { background: #050b18; color: #d6fbff; border: 1px solid rgba(0,229,255,.55); box-shadow: 0 0 8px rgba(0,229,255,.25); font-family: Rajdhani, Arial, sans-serif; font-size: 12px; line-height: 1.2; }
+  body.modern.playmode.landscape .mspdesc .sp-title { font-size: 10px; }
   body.playmode.landscape .mctl-l { grid-template-columns: 1fr 1fr; align-content: end; }
   body.playmode.landscape .mctl-l [data-k="soft"] { grid-column: 1 / span 2; grid-row: 2; }
   body.playmode.landscape .mctl-r { grid-template-columns: 1fr 1fr; }
@@ -494,10 +506,13 @@
     <!-- phone / tablet play mode -->
     <div class="mbar" id="mbar">
       <span class="mstatus" id="mStatus">Not Playing</span>
-      <button type="button" id="mNew">New Game</button>
-      <button type="button" id="mPause">Pause</button>
-      <button type="button" id="mFull" aria-label="Full screen" title="Full screen">⛶</button>
-      <button type="button" id="mExit">Menu</button>
+      <div class="mbtns">
+        <button type="button" id="mNew">New Game</button>
+        <button type="button" id="mPause">Pause</button>
+        <button type="button" id="mFull" aria-label="Full screen" title="Full screen">⛶</button>
+        <button type="button" id="mExit">Menu</button>
+      </div>
+      <div class="mspdesc" id="mSpDesc" aria-live="polite"></div>
     </div>
     <div class="mctl-sp" id="mctlSp" aria-label="Special blocks">
       <button type="button" class="msp" id="mSp" aria-label="What does my next special block do?"><canvas id="mSpIcon" width="32" height="32" aria-hidden="true"></canvas></button>
@@ -3150,6 +3165,10 @@ function updateSpInfo() {
   spKey = key;
   $('spTitle').innerHTML = title; $('spDesc').textContent = desc; $('spCtx').innerHTML = ctx; $('spHow').innerHTML = how;
   $('spCtx').hidden = !ctx; $('spHow').hidden = !how;
+  // phone/tablet play mode: the same explanation, always shown in the left column
+  $('mSpDesc').innerHTML = '<div class="sp-title">' + (sp ? esc(SNAME[sp]) + ' <span class="sp-kind ' + SP_KIND[sp] + '">' + KIND_LABEL[SP_KIND[sp]].toUpperCase() + '</span>' : title) + '</div>' +
+    '<div class="sp-desc">' + esc(sp ? desc : (playing ? 'Clear a line with a lettered block to collect one.' : desc)) + '</div>' +
+    (ctx ? '<div class="sp-ctx">' + ctx + '</div>' : '');
   const icon = $('spIcon');
   if (sp) { icon.style.visibility = 'visible'; drawSprite(icon, sp, 2); } else icon.style.visibility = 'hidden';
   const q = $('spQueue');
