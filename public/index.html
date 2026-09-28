@@ -2303,6 +2303,13 @@ window.addEventListener('keydown', e => {
   if (inTextField(e)) return;
   if (e.ctrlKey && !/control/i.test(S.keys.join(' ')) || e.metaKey || e.altKey) return;   // leave browser shortcuts alone
   const me = ME();
+  // T opens the message box whenever you're in a game room or a game (also while waiting for the next
+  // game to start), wherever you last clicked, unless you're typing somewhere else.
+  if (normKey(e.key) === 't' && !MOBILE.play && (G.running || NET.online || fieldsActive || document.activeElement === stage) && chat.offsetParent !== null) {
+    e.preventDefault();
+    openChat();
+    return;
+  }
   // While you're playing, the game keys (and T to talk) work wherever you last clicked on the page,
   // except while typing in a text box. Otherwise only when the playing fields were clicked last.
   const playing = G.running && me.present && !MOBILE.play;
