@@ -19,9 +19,12 @@ The original game, its design and its name belong to its creator; this port is i
 - Empty games are removed after 2 minutes.
 - The page opens on the lobby; the Playing Fields open by themselves when you join a room or
   press **Practice against bots**, and stay open while you're in a room.
-- **Music** (Settings → Sound and Theme → Music Track): the original "The Dance of the Spheres",
-  or **Midnight Circuit**, an original indie-disco / French-house track made for this port
-  (122 BPM, loops every 1:50). Your choice is remembered.
+- **Music** (Settings → Sound and Theme → Music Track): the original "The Dance of the Spheres", or
+  one of three originals made for this port: **Midnight Circuit** (indie-disco / French house),
+  **Chrome Nights** (French electro / night-drive synthwave) and **Evergreen Signal** (psychedelic
+  jam-rock over techno). Your choice is remembered. The new songs' instruments are synthesized once
+  when the song is chosen (a second or two) and then replayed, so they're light on the CPU.
+  The `.mid` files are in the `music` folder.
 - **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original look
   with the original graphics. It's a per-player choice and doesn't change the game.
 - The side column shows the next special block (what it does, attack or defense, who it would
