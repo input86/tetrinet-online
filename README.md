@@ -17,6 +17,11 @@ The original game, its design and its name belong to its creator; this port is i
 - Up to 6 players per game. The first player in is the moderator (marked `*`): they set the
   rules and press **Start New Game**. If they leave, the next player takes over.
 - Empty games are removed after 2 minutes.
+- The page opens on the lobby; the Playing Fields open by themselves when you join a room or
+  press **Practice against bots**, and stay open while you're in a room.
+- **Music** (Settings → Sound and Theme → Music Track): the original "The Dance of the Spheres",
+  or **Midnight Circuit**, an original indie-disco / French-house track made for this port
+  (122 BPM, loops every 1:50). Your choice is remembered.
 - **Display** (top right): **Modern** is a neon grid look; **Legacy** is the original look
   with the original graphics. It's a per-player choice and doesn't change the game.
 - The side column shows the next special block (what it does, attack or defense, who it would
