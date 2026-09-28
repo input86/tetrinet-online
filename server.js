@@ -22,7 +22,7 @@ const PUB = path.join(__dirname, 'public');
 const MAX_PLAYERS = 6;
 const MAX_ROOMS = 100;
 const EMPTY_ROOM_TTL = 2 * 60 * 1000;   // an empty room survives 2 minutes (page reloads, invite links)
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.ico': 'image/x-icon', '.txt': 'text/plain' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.webmanifest': 'application/manifest+json', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.ico': 'image/x-icon', '.txt': 'text/plain' };
 
 /* ---------- static files ---------- */
 const server = http.createServer((req, res) => {

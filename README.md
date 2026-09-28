@@ -34,6 +34,13 @@ The original game, its design and its name belong to its creator; this port is i
   - **Menu** returns to the lobby and chat; **Back to Game** returns to the game. Opponents are
     drawn at the original size there. Misc. Settings → Controls can force touch or keyboard controls.
   - No ghost piece, as in the original.
+- **Install as an app:** on Android (Chrome) an **⤓ Install App** button appears at the top of the
+  page; on iPhone/iPad it explains Safari's Share → **Add to Home Screen**. Opened from its
+  home-screen icon, TetriNET runs full screen like an app: no browser bars, no "exit full screen"
+  notice, and it turns sideways by itself when a game starts (menus can be upright). Without
+  internet it still opens, for offline games against bots.
+- In the browser, full screen stays on through the menu and between games, so the phone's
+  "to exit full screen…" notice shows only once. **⛶** turns full screen off.
 
 ## Files
 
@@ -41,6 +48,7 @@ The original game, its design and its name belong to its creator; this port is i
 |---|---|
 | `server.js` | Serves the page and runs the game rooms over a WebSocket (same address). |
 | `public/index.html` | The whole game: engine, graphics, sounds, music, lobby. |
+| `public/manifest.webmanifest`, `public/sw.js`, `public/*.png` | What phones need to install the game as an app: name, icons, and offline start-up. |
 | `package.json` | Node.js project file (one dependency: `ws`). |
 | `render.yaml` | Optional one-click setup for Render. |
 
@@ -81,8 +89,10 @@ Friends on the same Wi-Fi can join at `http://YOUR-PC-IP:3000`.
 ## Updating
 
 1. On GitHub, open your repository and choose **Add file → Upload files**.
-2. Drag in the new files (for this update: `public/index.html` and `README.md`; if in doubt,
-   upload everything again except `node_modules`). Files with the same name are replaced.
+2. Drag in the new files. Files with the same name are replaced. For this update:
+   `server.js`, `README.md`, and in the `public` folder: `index.html`, `manifest.webmanifest`,
+   `sw.js`, `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`,
+   `favicon-64.png`. If in doubt, upload everything again except `node_modules`.
 3. **Commit changes**. Render notices the commit and redeploys by itself (watch the
    **Events** tab on your service; it takes 1–3 minutes). If auto-deploy is off, press
    **Manual Deploy → Deploy latest commit**.

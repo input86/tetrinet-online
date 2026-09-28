@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#02040a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TetriNET">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>TetriNET</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -285,6 +290,7 @@
   details summary { cursor: pointer; }
 
   /* ---------- display mode switch ---------- */
+  .modebar .install { margin-right: auto; white-space: nowrap; }
   .modebar { display: flex; justify-content: flex-end; align-items: center; gap: 8px; color: #e8ffff; font-weight: bold; text-shadow: 1px 1px 0 rgba(0,0,0,.5); }
   .seg { display: inline-flex; }
   .seg button { min-height: 24px; padding: 2px 12px; }
@@ -394,7 +400,7 @@
   </div>
 </div>
 <div id="app">
-  <div class="modebar"><span id="modeLabel">Display</span>
+  <div class="modebar"><button type="button" id="btnInstall" class="install" hidden>⤓ Install App</button><span id="modeLabel">Display</span>
     <span class="seg" role="group" aria-labelledby="modeLabel">
       <button type="button" id="modeModern" aria-pressed="true">Modern</button><button type="button" id="modeLegacy" aria-pressed="false">Legacy</button>
     </span>
@@ -2334,7 +2340,7 @@ function detectTouchUI() {
 document.addEventListener('pointerdown', e => {
   if (e.pointerType === 'touch' && !MOBILE.touchSeen && (S.ui || 'auto') === 'auto') {
     MOBILE.touchSeen = true;
-    if (!MOBILE.on) { updateMobileMode(); fitStage(); }
+    if (!MOBILE.on) { updateMobileMode(); fitStage(); updateInstallBtn(); }
   }
 }, true);
 function updateMobileMode() {
@@ -2368,7 +2374,7 @@ function exitPlay(silent) {
   for (const p of G.players) if (p) softDropUp(p);
   releaseAllTouches();
   cancelGestures();
-  leaveFullscreen();
+  unlockOrientation();                           // stay full screen, so the phone's notice isn't shown again; menus may turn upright
   updateResume();
   updateRotPrompt();
   requestAnimationFrame(fitStage);
@@ -2387,8 +2393,11 @@ function isPhone() {
 const fsEl = document.documentElement;
 const canFullscreen = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
 const fsActive = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+// opened from the home-screen icon: already full screen, no browser bars, no "exit full screen" notice
+// (a browser tab that went full screen through the Fullscreen API also matches display-mode: fullscreen, so that case is excluded)
+const isInstalled = () => !!(navigator.standalone || (window.matchMedia && (matchMedia('(display-mode: standalone)').matches || (matchMedia('(display-mode: fullscreen)').matches && !fsActive()))));
 function goFullscreen() {                        // must run inside a tap
-  if (!canFullscreen || fsActive()) { lockLandscape(); return; }
+  if (isInstalled() || !canFullscreen || fsActive()) { lockLandscape(); return; }
   try {
     const r = fsEl.requestFullscreen ? fsEl.requestFullscreen({ navigationUI: 'hide' }) : fsEl.webkitRequestFullscreen();
     if (r && r.then) r.then(lockLandscape, () => {});
@@ -2397,8 +2406,11 @@ function goFullscreen() {                        // must run inside a tap
 function lockLandscape() {
   try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch (e) {}
 }
-function leaveFullscreen() {
+function unlockOrientation() {
   try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+}
+function leaveFullscreen() {
+  unlockOrientation();
   try { if (fsActive()) { const r = (document.exitFullscreen || document.webkitExitFullscreen).call(document); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
 }
 let rotPaused = false;                         // offline games pause while the prompt is up
@@ -2411,7 +2423,7 @@ function updateRotPrompt() {
       for (const p of G.players) if (p) softDropUp(p);
       releaseAllTouches(); cancelGestures();
     }
-    gid('rotFull').hidden = !canFullscreen || fsActive();
+    gid('rotFull').hidden = !canFullscreen || fsActive() || isInstalled();
     if (G.running && !NET.online && !G.paused) { setPaused(true); rotPaused = true; }
     const note = NET.online && G.running ? 'TetriNET plays in landscape on phones. The game keeps going for the other players.'
       : rotPaused ? 'TetriNET plays in landscape on phones. Your game is paused until you turn it.' : 'TetriNET plays in landscape on phones.';
@@ -2630,7 +2642,7 @@ function updateMobileBar() {
   gid('mNew').hidden = G.running || !mod;
   gid('mPause').hidden = !G.running || !mod;
   gid('mPause').textContent = G.paused ? 'Resume' : 'Pause';
-  gid('mFull').hidden = !canFullscreen;
+  gid('mFull').hidden = !canFullscreen || isInstalled();
   updateRotPrompt();
   if (!gid('mSheet').hidden) fillSheet();
   updateTargets();
@@ -3320,8 +3332,11 @@ document.addEventListener('click', e => {
   if (!b) { if (!e.target.closest('#helpPop')) closeHelp(); return; }
   e.preventDefault(); e.stopPropagation();
   if (helpFor === b) { closeHelp(); return; }
+  showPop(b, b.dataset.help);
+}, true);
+function showPop(b, text) {
   const pop = $('helpPop');
-  pop.textContent = b.dataset.help;
+  pop.textContent = text;
   pop.hidden = false;
   helpFor = b;
   const r = b.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
@@ -3329,9 +3344,33 @@ document.addEventListener('click', e => {
   let y = r.bottom + 8;
   if (y + ph > window.innerHeight - 8) y = Math.max(8, r.top - ph - 8);
   pop.style.left = x + 'px'; pop.style.top = y + 'px';
-}, true);
+}
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
 window.addEventListener('scroll', closeHelp, { passive: true });
+
+/* ---------- install as an app (home screen) ---------- */
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
+}
+let installEvt = null;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+function updateInstallBtn() {
+  // Android/desktop Chrome: when the browser offers installing; iPhone/iPad: explain Add to Home Screen
+  $('btnInstall').hidden = isInstalled() || !(installEvt || (isIOS && MOBILE.on));
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; updateInstallBtn(); });
+window.addEventListener('appinstalled', () => { installEvt = null; updateInstallBtn(); });
+$('btnInstall').addEventListener('click', e => {
+  if (installEvt) {
+    const ev = installEvt; installEvt = null;
+    ev.prompt();
+    (ev.userChoice || Promise.resolve()).finally(updateInstallBtn);
+  } else {
+    e.stopPropagation();
+    if (helpFor === e.currentTarget) { closeHelp(); return; }
+    showPop(e.currentTarget, 'On iPhone and iPad: tap the Share button in Safari, then “Add to Home Screen”. TetriNET then opens from its icon like an app, without the browser bars.');
+  }
+});
 
 // boot
 buildForm();
@@ -3340,6 +3379,7 @@ renderWinlist();
 addMsg('TetriNET — a web port of the original game by St0rmCat.');
 updateButtons();
 updateMobileMode();
+updateInstallBtn();
 fitStage();
 requestAnimationFrame(frame);
 </script>
