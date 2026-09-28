@@ -190,10 +190,16 @@
   body.modern .rotnote { color: #bdf6ff; }
   body.modern .rotbox button { background: #041824; color: #fff; border: 1px solid #00e5ff; box-shadow: 0 0 12px rgba(0,229,255,.45); }
   body.modern .mbar .mstatus { color: #00e5ff; font-family: Orbitron, Rajdhani, sans-serif; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
-  body.modern .mctl-l button, body.modern .mctl-r button { font-size: 24px; }
-  body.modern .mctl-r .mdrop { color: #ff6ef5; border-color: #ff3df2; box-shadow: 0 0 8px rgba(255,61,242,.35); font-size: 14px; }
-  body.modern .mtargets button.atk { border-color: #ff4d6d; color: #ffc2cd; }
-  body.modern .mtargets button.def { border-color: #39ff88; color: #c9ffe0; }
+  body.modern .mctl-l button, body.modern .mctl-r button { font-size: 26px; --br: #bff8ff; border-color: rgba(24,228,255,.55); }
+  body.modern .mctl-r .mdrop { --br: #ffb3fb; color: #ffd0fb; border-color: #ff3df2; text-shadow: 0 0 8px rgba(255,61,242,.9); font-family: Orbitron, Rajdhani, sans-serif; font-size: 15px; letter-spacing: .18em;
+    background-image: linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(var(--br), var(--br)), linear-gradient(180deg, rgba(255,61,242,.22), rgba(255,61,242,.05) 55%, rgba(255,61,242,.12));
+    box-shadow: 0 0 10px rgba(255,61,242,.35), inset 0 1px 0 rgba(255,255,255,.1); }
+  body.modern.playmode .mctl-r .mdrop.on, body.modern .mctl-r .mdrop:active { box-shadow: 0 0 18px rgba(255,61,242,.8), inset 0 0 14px rgba(255,61,242,.5); }
+  body.modern .msp { --br: #bff8ff; }
+  body.modern .spinfo canvas, body.modern .msp canvas, body.modern .sp-queue canvas { image-rendering: auto; }
+  body.modern.playmode #fieldsWin { background: radial-gradient(ellipse at 50% 0%, rgba(24,228,255,.10), transparent 60%), radial-gradient(ellipse at 50% 110%, rgba(255,61,242,.10), transparent 60%), #02040a; }
+  body.modern .mtargets button.atk { border-color: #ff4d6d; color: #ffd6dd; --br: #ff8fa3; text-shadow: 0 0 6px rgba(255,77,109,.7); }
+  body.modern .mtargets button.def { border-color: #39ff88; color: #d6ffe8; --br: #9dffc4; text-shadow: 0 0 6px rgba(57,255,136,.7); }
   body:not(.modern) .mtargets button.atk { color: #800000; }
   body:not(.modern) .mtargets button.def { color: #005000; }
 
@@ -314,18 +320,29 @@
     background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
   }
   body.modern .modebar { color: #7fdfff; text-shadow: 0 0 8px rgba(0,229,255,.6); font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
-  body.modern .win { background: rgba(6,11,22,.92); border: 1px solid #00e5ff; box-shadow: 0 0 0 1px rgba(0,229,255,.15), 0 0 18px rgba(0,229,255,.28), inset 0 0 24px rgba(0,229,255,.06); padding: 4px; border-radius: 3px; }
+  body.modern .win { background: linear-gradient(#7ff3ff, #7ff3ff) left top / 14px 2px no-repeat, linear-gradient(#7ff3ff, #7ff3ff) left top / 2px 14px no-repeat, linear-gradient(#7ff3ff, #7ff3ff) right bottom / 14px 2px no-repeat, linear-gradient(#7ff3ff, #7ff3ff) right bottom / 2px 14px no-repeat, rgba(6,11,22,.92); border: 1px solid #00e5ff; box-shadow: 0 0 0 1px rgba(0,229,255,.15), 0 0 18px rgba(0,229,255,.28), inset 0 0 24px rgba(0,229,255,.06); padding: 4px; border-radius: 3px; }
   body.modern .titlebar { background: linear-gradient(90deg, rgba(0,229,255,.16), rgba(255,61,242,.10) 70%, transparent); border-bottom: 1px solid rgba(0,229,255,.5); font-family: Orbitron, Rajdhani, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #00e5ff; text-shadow: 0 0 8px rgba(0,229,255,.8); padding: 6px 8px; }
   body.modern .attacks, body.modern .msgs { background: #030812; border: 1px solid #0f4a5a; box-shadow: inset 0 0 12px rgba(0,229,255,.06); color: #9fb8c8; font-family: Rajdhani, sans-serif; font-size: 14px; }
   body.modern .msgs { color: #bdf6ff; }
   body.modern .attacks .bad { color: #ff4d6d; } body.modern .attacks .good { color: #39ff88; } body.modern .attacks .nm { color: #00e5ff; }
   body.modern .side-h { color: #ff6ef5; font-family: Orbitron, Rajdhani, sans-serif; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,61,242,.6); font-weight: 700; }
   body.modern .titlebar .collapse { font-size: 11px; padding: 1px 8px; }
-  body.modern button, body.modern .btn, body.modern .seg button { background: rgba(0,229,255,.06); color: #bdf6ff; border: 1px solid #00b8d4; box-shadow: none; border-radius: 2px; font-family: Rajdhani, sans-serif; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 13px; }
-  body.modern button:hover:not(:disabled) { background: rgba(0,229,255,.16); box-shadow: 0 0 10px rgba(0,229,255,.45); color: #fff; }
-  body.modern button:active:not(:disabled) { border-color: #00e5ff; box-shadow: inset 0 0 8px rgba(0,229,255,.5); }
-  body.modern button:disabled { color: #3c5866; border-color: #16303c; text-shadow: none; background: transparent; }
-  body.modern .seg button[aria-pressed="true"] { background: rgba(0,229,255,.22); color: #fff; box-shadow: 0 0 10px rgba(0,229,255,.5); border-color: #00e5ff; }
+  /* modern buttons: glass with light-bracket corners (drawn as background layers, so no layout change) */
+  body.modern button, body.modern .btn, body.modern .seg button {
+    --br: #7ff3ff;
+    background:
+      linear-gradient(var(--br), var(--br)) left top / 7px 1.5px no-repeat,
+      linear-gradient(var(--br), var(--br)) left top / 1.5px 7px no-repeat,
+      linear-gradient(var(--br), var(--br)) right bottom / 7px 1.5px no-repeat,
+      linear-gradient(var(--br), var(--br)) right bottom / 1.5px 7px no-repeat,
+      linear-gradient(180deg, rgba(24,228,255,.16), rgba(24,228,255,.03) 55%, rgba(24,228,255,.08));
+    color: #d9fbff; border: 1px solid rgba(24,228,255,.45); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); border-radius: 1px;
+    font-family: Rajdhani, sans-serif; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: 13px;
+    text-shadow: 0 0 6px rgba(24,228,255,.55); transition: box-shadow .12s, background-color .12s, filter .12s; }
+  body.modern button:hover:not(:disabled) { background-color: rgba(24,228,255,.1); box-shadow: 0 0 12px rgba(24,228,255,.45), inset 0 1px 0 rgba(255,255,255,.12); color: #fff; }
+  body.modern button:active:not(:disabled), body.modern.playmode button.on { background-color: rgba(24,228,255,.28); box-shadow: 0 0 16px rgba(24,228,255,.7), inset 0 0 14px rgba(24,228,255,.45); color: #fff; filter: none; }
+  body.modern button:disabled { color: #3c5866; border-color: #16303c; text-shadow: none; background: transparent; --br: #16303c; }
+  body.modern .seg button[aria-pressed="true"] { background-color: rgba(0,229,255,.22); color: #fff; box-shadow: 0 0 10px rgba(0,229,255,.5); border-color: #00e5ff; }
   body.modern .tab { background: transparent; border: 1px solid #0c4a5a; border-bottom: none; color: #7fbccc; }
   body.modern .tab[aria-selected="true"] { color: #00e5ff; border-color: #00e5ff; text-shadow: 0 0 6px rgba(0,229,255,.7); background: rgba(0,229,255,.08); }
   body.modern .panel { border: 1px solid rgba(0,229,255,.35); box-shadow: none; border-radius: 2px; }
@@ -1755,59 +1772,121 @@ function themeFromBitmap(img, original) {        // layout used by 0x442768 (sma
 }
 builtInTheme();
 
-/* ---------- Modern (neon grid) theme ---------- */
-const THEME_M = { big: [], small: [], small8: [], bg: null, sbg: null, sbg8: null };
-const NEON = { '1': '#00e5ff', '2': '#ffe600', '3': '#39ff88', '4': '#ff3df2', '5': '#ff7a1a' };
+/* ---------- Modern (neon grid) theme ----------
+   Drawn with vectors at the screen's real resolution (rebuilt whenever the fields are resized),
+   so blocks stay sharp on phones and big monitors. Colours follow the classic Tetris scheme:
+   the five TetriNET block colours are I cyan, O yellow, J blue, L orange, Z red
+   (S and T share the I and O colours, exactly as in the original game).                       */
+let SC = 2;                                          // device pixels per layout unit (set by fitStage)
+const THEME_M = { big: [], small: [], small8: [], bg: null, sbg: null, sbg8: null, q: 0 };
+const NEON = { '1': '#18e4ff', '2': '#ffd31a', '3': '#2f74ff', '4': '#ff941a', '5': '#ff2e4d' };
 const SP_KIND = { a: 'attack', c: 'defense', n: 'defense', r: 'attack', s: 'either', b: 'attack', g: 'defense', q: 'attack', o: 'attack' };
 const KIND_COLOR = { attack: '#ff4d6d', defense: '#39ff88', either: '#ffe600' };
 function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; }
-function neonSprite(ch, s) {
-  const c = mk(s, s), x = c.getContext('2d');
-  x.fillStyle = '#02050c'; x.fillRect(0, 0, s, s);
+function mixHex(hex, to, t) {                   // blend a colour toward white (to=255) or black (to=0)
+  const n = parseInt(hex.slice(1), 16), f = v => Math.round(v + (to - v) * t);
+  return 'rgb(' + f(n >> 16) + ',' + f((n >> 8) & 255) + ',' + f(n & 255) + ')';
+}
+function rrPath(x, X, Y, w, h, r) {
+  x.beginPath();
+  x.moveTo(X + r, Y); x.lineTo(X + w - r, Y); x.quadraticCurveTo(X + w, Y, X + w, Y + r);
+  x.lineTo(X + w, Y + h - r); x.quadraticCurveTo(X + w, Y + h, X + w - r, Y + h);
+  x.lineTo(X + r, Y + h); x.quadraticCurveTo(X, Y + h, X, Y + h - r);
+  x.lineTo(X, Y + r); x.quadraticCurveTo(X, Y, X + r, Y); x.closePath();
+}
+function hexPath(x, cxp, cyp, r) {
+  x.beginPath();
+  for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; x[i ? 'lineTo' : 'moveTo'](cxp + r * Math.cos(a), cyp + r * Math.sin(a)); }
+  x.closePath();
+}
+// one block of `cell` logical units, rendered at q device pixels per unit, with room around it for the glow
+function neonSprite(ch, cell, q) {
+  const pad = cell * 0.3, span = cell + 2 * pad, px = Math.max(1, Math.ceil(span * q));
+  const c = mk(px, px), x = c.getContext('2d');
+  c.padF = pad / cell; c.spanF = span / cell;
+  x.scale(px / span, px / span); x.translate(pad, pad);
+  const s = cell, dev = s * q, blur = k => Math.max(1, s * k * q);
   if (NEON[ch]) {
-    const col = NEON[ch];
+    const col = NEON[ch], ins = s * 0.05, r = s * 0.17, w = s - 2 * ins;
+    // outer glow
+    x.save(); x.shadowColor = rgba(col, 0.9); x.shadowBlur = blur(0.42);
+    x.fillStyle = rgba(col, 0.85); rrPath(x, ins, ins, w, w, r); x.fill(); x.restore();
+    // glassy body: light top-left, deep bottom-right
     const g = x.createLinearGradient(0, 0, s, s);
-    g.addColorStop(0, rgba(col, 0.55)); g.addColorStop(1, rgba(col, 0.18));
-    x.fillStyle = g; x.fillRect(1, 1, s - 2, s - 2);
-    x.strokeStyle = col; x.lineWidth = 1; x.strokeRect(1.5, 1.5, s - 3, s - 3);
-    if (s >= 16) {
-      x.strokeStyle = rgba('#ffffff', 0.55); x.beginPath(); x.moveTo(3.5, 3.5); x.lineTo(s - 4.5, 3.5); x.stroke();
-      x.fillStyle = rgba(col, 0.9); x.fillRect(s / 2 - 2, s / 2 - 2, 4, 4);
-      x.fillStyle = rgba('#ffffff', 0.8); x.fillRect(s / 2 - 1, s / 2 - 1, 2, 2);
-    } else {
-      x.fillStyle = rgba('#ffffff', 0.7); x.fillRect(s / 2 - 1, s / 2 - 1, 2, 2);
+    g.addColorStop(0, mixHex(col, 255, 0.3)); g.addColorStop(0.45, col); g.addColorStop(1, mixHex(col, 0, 0.5));
+    x.fillStyle = g; rrPath(x, ins, ins, w, w, r); x.fill();
+    // top gloss
+    x.save(); rrPath(x, ins, ins, w, w, r); x.clip();
+    const gl = x.createLinearGradient(0, ins, 0, s * 0.55);
+    gl.addColorStop(0, 'rgba(255,255,255,0.38)'); gl.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = gl; x.fillRect(0, 0, s, s * 0.55);
+    x.restore();
+    if (dev >= 13) {                             // inner light-circuit window
+      const k = s * 0.27;
+      x.fillStyle = 'rgba(0,8,20,0.32)'; rrPath(x, k, k, s - 2 * k, s - 2 * k, s * 0.08); x.fill();
+      x.strokeStyle = 'rgba(255,255,255,0.75)'; x.lineWidth = Math.max(1 / q, s * 0.05);
+      x.save(); x.shadowColor = '#fff'; x.shadowBlur = blur(0.12); x.stroke(); x.restore();
     }
+    // bright rim
+    x.strokeStyle = mixHex(col, 255, 0.65); x.lineWidth = Math.max(1 / q, s * 0.06);
+    rrPath(x, ins + x.lineWidth / 2, ins + x.lineWidth / 2, w - x.lineWidth, w - x.lineWidth, r); x.stroke();
   } else {
-    const col = KIND_COLOR[SP_KIND[ch]] || '#00e5ff';
-    x.fillStyle = rgba(col, 0.12); x.fillRect(1, 1, s - 2, s - 2);
-    x.strokeStyle = col; x.lineWidth = 1;
-    x.beginPath(); x.arc(s / 2, s / 2, s / 2 - 1.5, 0, Math.PI * 2); x.stroke();
-    x.fillStyle = '#ffffff';
-    x.font = (s >= 16 ? 'bold 10px' : 'bold ' + Math.round(s * 0.7) + 'px') + ' Orbitron, Arial, sans-serif';
+    const col = KIND_COLOR[SP_KIND[ch]] || '#18e4ff', R = s * 0.47;
+    // dark glass hex chip with a neon edge and a glowing letter
+    x.fillStyle = '#030814'; rrPath(x, s * 0.03, s * 0.03, s * 0.94, s * 0.94, s * 0.14); x.fill();
+    const rg = x.createRadialGradient(s / 2, s * 0.4, 0, s / 2, s / 2, R);
+    rg.addColorStop(0, rgba(col, 0.42)); rg.addColorStop(1, rgba(col, 0.06));
+    hexPath(x, s / 2, s / 2, R); x.fillStyle = rg; x.fill();
+    x.save(); x.shadowColor = col; x.shadowBlur = blur(0.35);
+    x.strokeStyle = col; x.lineWidth = Math.max(1 / q, s * 0.075); hexPath(x, s / 2, s / 2, R - x.lineWidth / 2); x.stroke();
+    x.restore();
+    x.save();
+    x.font = '800 ' + (s * 0.56) + 'px Orbitron, "Segoe UI", Arial, sans-serif';
     x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillText(ch.toUpperCase(), s / 2, s / 2 + (s >= 16 ? 1 : 0.5));
+    x.shadowColor = col; x.shadowBlur = blur(0.3);
+    x.fillStyle = '#ffffff'; x.fillText(ch.toUpperCase(), s / 2, s / 2 + s * 0.04);
+    x.restore();
   }
   return c;
 }
-function neonBackground(w, h, cell) {
-  const c = mk(w, h), x = c.getContext('2d');
+function neonBackground(w, h, cell, q) {
+  const px = Math.max(1, Math.round(w * q)), py = Math.max(1, Math.round(h * q));
+  const c = mk(px, py), x = c.getContext('2d');
+  x.scale(px / w, py / h);
   const g = x.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, '#02040a'); g.addColorStop(0.75, '#040a18'); g.addColorStop(1, '#12061c');
+  g.addColorStop(0, '#01030a'); g.addColorStop(0.7, '#030a18'); g.addColorStop(1, '#0a0820');
   x.fillStyle = g; x.fillRect(0, 0, w, h);
-  for (let i = 0; i <= w; i += cell) { x.fillStyle = rgba('#00e5ff', i % (cell * 4) === 0 ? 0.16 : 0.07); x.fillRect(i === w ? w - 1 : i, 0, 1, h); }
-  for (let j = 0; j <= h; j += cell) { x.fillStyle = rgba('#00e5ff', j % (cell * 4) === 0 ? 0.16 : 0.07); x.fillRect(0, j === h ? h - 1 : j, w, 1); }
-  const hz = x.createLinearGradient(0, h * 0.8, 0, h);
-  hz.addColorStop(0, 'rgba(255,61,242,0)'); hz.addColorStop(1, 'rgba(255,61,242,0.18)');
-  x.fillStyle = hz; x.fillRect(0, h * 0.8, w, h * 0.2);
+  const lw = 1 / q;                              // one device pixel
+  for (let i = 0; i <= W; i++) { x.fillStyle = rgba('#18e4ff', i % 4 === 0 ? 0.15 : 0.07); x.fillRect(Math.min(i * cell, w - lw), 0, lw, h); }
+  for (let j = 0; j <= H; j++) { x.fillStyle = rgba('#18e4ff', j % 4 === 0 ? 0.15 : 0.07); x.fillRect(0, Math.min(j * cell, h - lw), w, lw); }
+  // glowing dots where the major lines cross
+  x.fillStyle = rgba('#18e4ff', 0.35);
+  for (let i = 0; i <= W; i += 4) for (let j = 0; j <= H; j += 4) x.fillRect(i * cell - lw, j * cell - lw, lw * 3, lw * 3);
+  // horizon glow at the bottom, soft edge light on the sides
+  const hz = x.createLinearGradient(0, h * 0.72, 0, h);
+  hz.addColorStop(0, 'rgba(255,61,242,0)'); hz.addColorStop(1, 'rgba(255,61,242,0.2)');
+  x.fillStyle = hz; x.fillRect(0, h * 0.72, w, h * 0.28);
+  const sd = x.createLinearGradient(0, 0, w, 0);
+  sd.addColorStop(0, 'rgba(24,228,255,0.07)'); sd.addColorStop(0.12, 'rgba(24,228,255,0)'); sd.addColorStop(0.88, 'rgba(24,228,255,0)'); sd.addColorStop(1, 'rgba(24,228,255,0.07)');
+  x.fillStyle = sd; x.fillRect(0, 0, w, h);
+  c.lw = w; c.lh = h;
   return c;
 }
 function buildModernTheme() {
+  const q = Math.max(1, SC || 2);
+  THEME_M.q = q;
   THEME_M.big = []; THEME_M.small = []; THEME_M.small8 = [];
-  for (const ch of BLOCKCHARS) { THEME_M.big.push(neonSprite(ch, 16)); THEME_M.small.push(neonSprite(ch, SMALL)); THEME_M.small8.push(neonSprite(ch, 8)); }
-  THEME_M.sbg8 = neonBackground(96, 176, 8);
-  THEME_M.bg = neonBackground(192, 352, 16);
-  THEME_M.sbg = neonBackground(W * SMALL, H * SMALL, SMALL);
+  for (const ch of BLOCKCHARS) { THEME_M.big.push(neonSprite(ch, 16, q)); THEME_M.small.push(neonSprite(ch, SMALL, q)); THEME_M.small8.push(neonSprite(ch, 8, q)); }
+  THEME_M.sbg8 = neonBackground(96, 176, 8, q);
+  THEME_M.bg = neonBackground(192, 352, 16, q);
+  THEME_M.sbg = neonBackground(W * SMALL, H * SMALL, SMALL, q);
   G.dirty = true;
+}
+// draw a block sprite so that its cell covers (x, y, size, size); modern sprites carry glow padding
+function blit(img, x, y, size) {
+  if (!img) return;
+  if (img.spanF) cx.drawImage(img, x - img.padF * size, y - img.padF * size, img.spanF * size, img.spanF * size);
+  else cx.drawImage(img, x, y, size, size);
 }
 buildModernTheme();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { buildModernTheme(); spKey = ''; });
@@ -1831,7 +1910,6 @@ const cx = stage.getContext('2d');
    - desktop:          3 x 2 grid, opponents at 10px cells (25% larger than the original)
    - mobile portrait:  1 x 2, 2 x 2 or 2 x 3 grid (by number of opponents), original 8px cells
    - mobile landscape: 3 x 2 grid, original 8px cells                                        */
-let SC = 2;
 const MOBILE = { on: false, play: false, land: false, touchSeen: false };
 const LAYOUT_D = (() => {
   const cellX = [200, 323, 446], cellY = [1, 243], cell = (c, r) => ({ x: cellX[c], y: cellY[r] });
@@ -1892,24 +1970,42 @@ let P = PAL_L;
 let UIFONT = '11px Tahoma, Verdana, Arial, sans-serif';
 
 function bevelLowered(x, y, w, h) {
-  if (P.upper) {                                   // modern: thin neon frame with a soft glow
-    cx.save(); cx.shadowColor = 'rgba(0,229,255,0.6)'; cx.shadowBlur = 6;
-    cx.strokeStyle = P.hi; cx.lineWidth = 1; cx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1); cx.restore();
+  if (P.upper) {                                   // modern: chamfered neon frame with bright corner brackets
+    const k = Math.min(6, w / 6, h / 6), X = x + 0.5, Y = y + 0.5, R = x + w - 0.5, B = y + h - 0.5;
+    cx.save();
+    cx.beginPath();
+    cx.moveTo(X + k, Y); cx.lineTo(R, Y); cx.lineTo(R, B - k); cx.lineTo(R - k, B); cx.lineTo(X, B); cx.lineTo(X, Y + k); cx.closePath();
+    cx.shadowColor = 'rgba(24,228,255,0.55)'; cx.shadowBlur = 8 * SC;
+    cx.strokeStyle = 'rgba(24,228,255,0.42)'; cx.lineWidth = 1; cx.stroke();
+    cx.shadowBlur = 4 * SC; cx.shadowColor = '#18e4ff';
+    cx.strokeStyle = '#7ff3ff'; cx.lineWidth = 1.5;
+    const t = Math.min(14, w / 4, h / 4);
+    cx.beginPath(); cx.moveTo(X, Y + k + t); cx.lineTo(X, Y + k); cx.lineTo(X + k, Y); cx.lineTo(X + k + t, Y); cx.stroke();
+    cx.beginPath(); cx.moveTo(R, B - k - t); cx.lineTo(R, B - k); cx.lineTo(R - k, B); cx.lineTo(R - k - t, B); cx.stroke();
+    cx.restore();
     return;
   }
   cx.fillStyle = P.lo; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
   cx.fillStyle = P.hi; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
 }
 function panelRaised(x, y, w, h, caption, color, accent, font) {
-  cx.fillStyle = color || P.panel; cx.fillRect(x, y, w, h);
-  if (P.upper) { cx.fillStyle = accent || 'rgba(0,229,255,0.7)'; cx.fillRect(x, y + h - 1, w, 1); }
-  else {
+  if (P.upper) {                                   // modern: glass caption strip with a light line underneath
+    const g = cx.createLinearGradient(x, y, x, y + h);
+    g.addColorStop(0, 'rgba(24,228,255,0.20)'); g.addColorStop(1, 'rgba(24,228,255,0.04)');
+    cx.fillStyle = '#040a16'; cx.fillRect(x, y, w, h);
+    cx.fillStyle = g; cx.fillRect(x, y, w, h);
+    const a = accent || '#18e4ff', ln = cx.createLinearGradient(x, 0, x + w, 0);
+    ln.addColorStop(0, rgba(a, 0)); ln.addColorStop(0.5, a); ln.addColorStop(1, rgba(a, 0));
+    cx.fillStyle = ln; cx.fillRect(x, y + h - 1, w, 1);
+  } else {
+    cx.fillStyle = color || P.panel; cx.fillRect(x, y, w, h);
     cx.fillStyle = P.hi; cx.fillRect(x, y, w, 1); cx.fillRect(x, y, 1, h);
     cx.fillStyle = P.lo; cx.fillRect(x, y + h - 1, w, 1); cx.fillRect(x + w - 1, y, 1, h);
   }
   cx.save();
   cx.beginPath(); cx.rect(x + 2, y, w - 4, h); cx.clip();
   cx.fillStyle = accent && P.upper ? accent : P.panelText; cx.font = font || (P.upper ? '600 12px ' + P.font : UIFONT); cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  if (P.upper) { cx.shadowColor = accent || 'rgba(24,228,255,0.9)'; cx.shadowBlur = 6 * SC; }
   cx.fillText(P.upper ? caption.toUpperCase() : caption, x + w / 2, y + h / 2 + 0.5);
   cx.restore();
 }
@@ -1918,13 +2014,13 @@ function slotToNum(slot) { for (let n = 1; n <= 6; n++) if (slotFor(n) === slot)
 function drawField(p, x, y, big, L) {
   const T = TH(), s = big ? 16 : L.s;
   const bg = big ? T.bg : (s === 8 ? T.sbg8 : T.sbg), spr = big ? T.big : (s === 8 ? T.small8 : T.small);
-  cx.drawImage(bg, x, y);
+  if (bg.lw) cx.drawImage(bg, x, y, bg.lw, bg.lh); else cx.drawImage(bg, x, y);
   if (!p) return;
   let f = p.field;
   if (big && p.cur && !p.dead) { f = f.slice(); place(f, p.cur, p.x, p.y); }
   for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
     const ch = f[r * W + c];
-    if (ch !== '0') { const k = BLOCKCHARS.indexOf(ch); if (k >= 0) cx.drawImage(spr[k], x + c * s, y + r * s); }
+    if (ch !== '0') { const k = BLOCKCHARS.indexOf(ch); if (k >= 0) blit(spr[k], x + c * s, y + r * s, s); }
   }
 }
 function wrapText(text, maxW) {
@@ -1950,8 +2046,10 @@ function playerCaption(p, num) {
 function render() {
   const L = CUR;
   cx.setTransform(SC, 0, 0, SC, 0, 0);
-  cx.imageSmoothingEnabled = false;
   P = isModern() ? PAL_M : PAL_L;
+  if (P.upper && THEME_M.q !== Math.max(1, SC)) buildModernTheme();   // keep the neon sprites at screen resolution
+  cx.imageSmoothingEnabled = P.upper;             // the original bitmaps stay pixel-exact
+  if (P.upper) cx.imageSmoothingQuality = 'high';
   UIFONT = P.upper ? '600 11px ' + P.font : '11px Tahoma, Verdana, Arial, sans-serif';
   const T = TH();
   const label = t => P.upper ? t.toUpperCase() : t;
@@ -2000,7 +2098,7 @@ function render() {
     const ox = bx + 1 + Math.round((74 - w * 16) / 2), oy = by + 1 + Math.round((74 - h * 16) / 2);
     for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) {
       const ch = s.charAt(4 + r * w + c);
-      if (ch !== '0') cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], ox + c * 16, oy + r * 16);
+      if (ch !== '0') blit(T.big[BLOCKCHARS.indexOf(ch)], ox + c * 16, oy + r * 16, 16);
     }
   }
   let sy = by + 76 + (L.mobile ? 10 : 14);
@@ -2024,7 +2122,7 @@ function render() {
   cx.fillStyle = P.inv; cx.fillRect(1, L.inv.y - 1, 192, 34);
   for (let i = 0; i < 18; i++) {
     const ch = me.inv.charAt(i);
-    if (ch) cx.drawImage(T.big[BLOCKCHARS.indexOf(ch)], L.inv.x + (i % 12) * 16, L.inv.y + Math.floor(i / 12) * 16);
+    if (ch) blit(T.big[BLOCKCHARS.indexOf(ch)], L.inv.x + (i % 12) * 16, L.inv.y + Math.floor(i / 12) * 16, 16);
   }
   if (P.upper) { cx.save(); cx.shadowColor = P.sel; cx.shadowBlur = 8; }
   cx.strokeStyle = P.sel; cx.lineWidth = 2; cx.strokeRect(L.inv.x, L.inv.y, 16, 16);
@@ -2104,7 +2202,7 @@ function render() {
     const img = T.big[BLOCKCHARS.indexOf(DRAG.sp)];
     const bx2 = Math.round(DRAG.x - 12), by2 = Math.round(DRAG.y - 40);
     cx.shadowColor = 'rgba(0,0,0,.6)'; cx.shadowBlur = 6;
-    if (img) cx.drawImage(img, bx2, by2, 24, 24);
+    blit(img, bx2, by2, 24);
     cx.shadowBlur = 0;
     if (DRAG.target) {
       const t = DRAG.target === G.me ? 'On me' : 'To ' + (G.players[DRAG.target] ? G.players[DRAG.target].name : '');
@@ -2403,7 +2501,7 @@ function updateTargets() {
     return '<button type="button" data-t="' + p.num + '" class="' + cls + '"' + (ok ? '' : ' disabled') + '>' + p.num + '<small>' + (self ? 'Me' : esc(p.name)) + '</small></button>';
   }).join('') || '<span class="note" style="align-self:center">No players</span>';
   const ic = gid('mSpIcon');
-  if (sp) drawSprite(ic, sp, 2); else ic.getContext('2d').clearRect(0, 0, 32, 32);
+  if (sp) drawSprite(ic, sp, 2); else ic.getContext('2d').clearRect(0, 0, ic.width, ic.height);
   gid('mSp').disabled = false;
   const d = document.querySelector('#mctlSp .mdisc'); d.disabled = !sp;
 }
@@ -2510,7 +2608,7 @@ function endGesture(e, cancel) {
   if (cancel) return;
   const now = performance.now(), dx = e.clientX - g.x0, dy = e.clientY - g.y0, a = g.samples[0];
   const vy = now - a[0] > 0 ? (e.clientY - a[1]) / (now - a[0]) : 0;
-  if (dy > 2 * g.cell && vy > 0.7 && dy > Math.abs(dx)) { hardDrop(me); buzz(10); return; }
+  if (dy > 2 * g.cell && vy > 0.5 && dy > Math.abs(dx)) { hardDrop(me); buzz(10); return; }
   if (!g.mode && Math.hypot(dx, dy) < g.cell * 0.7 && now - g.t0 < 400) rotatePiece(me, g.half === 'r' ? 2 : 4);
 }
 stage.addEventListener('pointerup', e => endGesture(e, false));
@@ -3118,10 +3216,23 @@ const SP_INFO = {
 const KIND_LABEL = { attack: 'Attack', defense: 'Defense', either: 'Situational' };
 let spKey = '';
 function drawSprite(canvas, ch, scale) {
-  const x = canvas.getContext('2d'), T = TH(), k = BLOCKCHARS.indexOf(ch);
+  const k = BLOCKCHARS.indexOf(ch), css = 16 * scale;
+  canvas.style.width = canvas.style.height = css + 'px';
+  if (isModern()) {                               // sharp at the screen's pixel density
+    const dpr = Math.min(3, window.devicePixelRatio || 1), px = Math.round(css * dpr);
+    if (canvas.width !== px) { canvas.width = px; canvas.height = px; }
+    const x = canvas.getContext('2d');
+    x.clearRect(0, 0, px, px);
+    if (k < 0) return;
+    const spr = neonSprite(ch, 16, px / 16);
+    x.drawImage(spr, -spr.padF * px, -spr.padF * px, spr.spanF * px, spr.spanF * px);
+    return;
+  }
+  if (canvas.width !== css) { canvas.width = css; canvas.height = css; }
+  const x = canvas.getContext('2d');
   x.imageSmoothingEnabled = false;
-  x.clearRect(0, 0, canvas.width, canvas.height);
-  if (k >= 0) x.drawImage(T.big[k], 0, 0, 16 * scale, 16 * scale);
+  x.clearRect(0, 0, css, css);
+  if (k >= 0) x.drawImage(THEME.big[k], 0, 0, css, css);
 }
 function spNames(list) { return list.map(([p, n]) => esc(p.name) + (n != null ? ' ×' + n : '')).join(' · '); }
 function updateSpInfo() {
